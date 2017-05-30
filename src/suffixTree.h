@@ -1,9 +1,13 @@
 #ifndef SUFFIXTREE_H
-#define SUFFIXTREE_H 
+#define SUFFIXTREE_H
 
 #include "node.h"
 #include "edge.h"
 #include <iostream>
+
+extern string Input;
+extern int inputLength;
+extern Node * nodeArray;
 
 class suffixTree {
     public:
@@ -14,7 +18,7 @@ class suffixTree {
 
         // Constructor
         suffixTree() :
-            rootNode(0), 
+            rootNode(0),
             startIndex(-1),
             endIndex(-1){};
         suffixTree(int root, int start, int end) :
@@ -23,11 +27,15 @@ class suffixTree {
         endIndex(end) {};
         // Real means that the suffix string ends at a node and thus the
         // remaining string on that edge would be an empty string.
-        bool endReal() {return startIndex > endIndex;} 
+        bool endReal() {return startIndex > endIndex;}
         // Img means that the suffixTree of current string ends on an imaginary
-        // node, which means in between an edge. 
-        bool endImg() {return endIndex >= startIndex;} 
+        // node, which means in between an edge.
+        bool endImg() {return endIndex >= startIndex;}
         void migrateToClosestParent();
 };
 
-#endif                                                                             
+void carryPhase(suffixTree &tree, int lastIndex);
+bool search(string pattern);
+void printAllEdges();
+
+#endif

@@ -9,17 +9,11 @@ using namespace std;
 
 // TODO Add proper debug messages using macros.
 
-// Buffer for input string.
-string Input;
-int inputLength;
-
 // The initial tree contains one node i.e. root node so count = 1;
 int Node::noOfNodes = 1;
 
-// We need to maintain an array of nodes.
-Node * nodeArray;
 // Hash key for the edges would be the node from where edge is arising and the
-// first character. 
+// first character.
 // Note: This would always be unique due to a property of suffix tree which
 // states that no two edges emerging from a node can have same character as it's
 // label
@@ -44,8 +38,8 @@ void Edge::insert() {
     long key = returnHashKey(startNode, Input[startLabelIndex]);
    // edgeHash.insert(make_pair<int, Node>(key, this));
     edgeHash[key] = *this;
-  //  cout << "Inserted " << startNode << " " << endNode << " " << startLabelIndex  
- //       << " " << endLabelIndex <<  " " << key <<  endl; 
+  //  cout << "Inserted " << startNode << " " << endNode << " " << startLabelIndex
+ //       << " " << endLabelIndex <<  " " << key <<  endl;
 }
 /*
  * Remove an edge from the hash table.
@@ -66,7 +60,7 @@ Edge Edge::findEdge(int node, int asciiChar) {
     //    cout << "Entry found for " << node << " " << asciiChar << endl;
         return edgeHash.at(key);
     }
-    
+
   //  cout << "Entry NOT found for " << node << " " << asciiChar << endl;
     // Return an invalid edge if the entry is not found.
     return Edge();
@@ -102,7 +96,7 @@ void suffixTree::migrateToClosestParent() {
                 labelLength = e.endLabelIndex - e.startLabelIndex;
             }
         }
-        
+
     }
 }
 
@@ -110,10 +104,10 @@ void suffixTree::migrateToClosestParent() {
  * Break an edge so as to add new string at a specific point.
  */
 int breakEdge(suffixTree &s, Edge &e) {
-    // Remove the edge 
+    // Remove the edge
     e.remove();
 
-    Edge *newEdge = new Edge(s.rootNode, e.startLabelIndex, 
+    Edge *newEdge = new Edge(s.rootNode, e.startLabelIndex,
                              e.startLabelIndex + s.endIndex - s.startIndex);
     newEdge -> insert();
     // Add the suffix link for the new node.
@@ -147,7 +141,7 @@ void carryPhase(suffixTree &tree, int lastIndex) {
                 break;
         }
         // If previoustree ends in between an edge, then we need to find that
-        // edge and match after that. 
+        // edge and match after that.
         else {
             e = Edge::findEdge(tree.rootNode, Input[tree.startIndex]);
             int diff = tree.endIndex - tree.startIndex;
@@ -156,7 +150,7 @@ void carryPhase(suffixTree &tree, int lastIndex) {
                 break;
             //If match was not found this way, then we need to break this edge
             // and add a node and insert the string.
-      //      cout << " breaking edge " << endl; 
+      //      cout << " breaking edge " << endl;
             parentNode = breakEdge(tree, e);
         }
 
@@ -199,30 +193,30 @@ bool search(string pattern) {
     int i = -1;
     if (e.startNode != -1) {
         while(i < len) {
-            cout << "Search:\tEdge: " << e.startNode << " " << e.endNode << " : " 
+            cout << "Search:\tEdge: " << e.startNode << " " << e.endNode << " : "
                 << Input[e.startLabelIndex]  << " " << Input[e.endLabelIndex] << " I: " << i << endl;
             // Match the pattern on this edge.
             iter = 0;
             // Match this edge as much as possible.
-            while (e.endLabelIndex >= e.startLabelIndex + iter)   
+            while (e.endLabelIndex >= e.startLabelIndex + iter)
                     {
-                        cout << "Search:\tmatching " << Input[e.startLabelIndex + iter] << " " 
+                        cout << "Search:\tmatching " << Input[e.startLabelIndex + iter] << " "
                              << pattern[i + iter + 1]
                             << " at index: " << e.startLabelIndex + iter << endl;
                         // If character matches we increase the iterator
                         // otherwise we are done. No match.
-                        if (Input[e.startLabelIndex + iter] == pattern[i + iter + 1]) { 
+                        if (Input[e.startLabelIndex + iter] == pattern[i + iter + 1]) {
                             iter++;
                             // If we have a match in the middle then we are done.
                             if (i + iter  + 1 >= len) {
-                                cout << "Search:\tWe have a match ending at " 
+                                cout << "Search:\tWe have a match ending at "
                                      << e.startLabelIndex + iter  - 1 << endl;
                                 return true;
                             }
                         }
                         else {
                             cout << "Search:\tMatch not found, matched only upto index:" << i+iter << endl;
-                            return false;     
+                            return false;
                         }
                    }
             // We have done all possible matches on this edge. We can proceed
@@ -232,9 +226,9 @@ bool search(string pattern) {
             // Now we need to find another edge to match.
             e = Edge::findEdge(e.endNode, pattern[i + iter + 1]);
             if (e.startNode == -1) {
-                cout << "Search:\tMatch not found, matched only upto " << i + iter  
+                cout << "Search:\tMatch not found, matched only upto " << i + iter
                      << " " << pattern[i + iter + 1]<< endl;
-                return false;    
+                return false;
                 }
             i+=(iter);
         }
@@ -251,60 +245,20 @@ void printAllEdges() {
     cout << "StartNode\tEndNode\tSuffixLink\tFirstIndex\tlastIndex\tString" << endl;
     // For auto : C++11 FTW :)
     for (auto it = edgeHash.begin(); it != edgeHash.end(); it++) {
-        cout << it -> second.startNode << "\t\t" << it -> second.endNode 
+        cout << it -> second.startNode << "\t\t" << it -> second.endNode
             << "\t\t" << nodeArray[it -> second.endNode].suffixNode
-            << "\t\t" << it -> second.startLabelIndex 
+            << "\t\t" << it -> second.startLabelIndex
             << "\t\t" << it -> second.endLabelIndex
             << "\t\t";
         count++;
         int head;
         if (inputLength > it -> second.endLabelIndex)
             head = it -> second.endLabelIndex;
-        else 
+        else
             head = inputLength;
         for (int i = it -> second.startLabelIndex; i < head + 1; i++)
             cout << Input[i];
         cout << endl;
     }
     cout << "Total edges: " << count << endl;
-}
-
-
-int main () {
-  cout << "Enter String" << endl;
-  getline(cin, Input);
-  // For aligning indices
-  inputLength = Input.length() - 1;
-
-  // Allocating memory to the array of nodes.
-  nodeArray = (Node *)malloc(2*inputLength*(sizeof (Node)));
-//  cout << "you entered " << Input  << " length " << inputLength << endl;
-
-  // Start timer.
-  // Creating initial suffixTree.
-  auto start = std::chrono::high_resolution_clock::now();
-  suffixTree tree (0, 0, -1);
-  // Carry out different phases.
-  for (int i = 0; i <= inputLength; i++)
-      carryPhase(tree, i);
-
-  auto end = std::chrono::high_resolution_clock::now();
-  printAllEdges();
-  cout << "Total time taken to build suffix tree of length " << inputLength <<" : " 
-       << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() 
-       << "ms"<< endl;
-
-  cout << "Enter patterns or enter \"exit\" to exit." << endl;
-  string pattern;
-  getline(cin, pattern);
-  while (pattern.compare("exit")) {
-    search(pattern);
-    cout << "----------------------------------------------------" << endl;
-    cout << "Enter pattern or enter \"exit\" to exit." << endl;
-    getline(cin, pattern);
-  }
-  cout << "Wait for some more time to see the tree." << endl;
-  cout << "Seeds are being imported right now." << endl;
-  cout << "Adios!" << endl;
-  return 0;
 }
