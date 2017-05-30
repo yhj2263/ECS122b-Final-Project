@@ -3,11 +3,13 @@
 
 #include "node.h"
 #include "edge.h"
+#include <unordered_map> // Required c++11 support.
 #include <iostream>
 
 extern string Input;
 extern int inputLength;
 extern Node * nodeArray;
+extern unordered_map <long, Edge> edgeHash;
 
 class suffixTree {
     public:

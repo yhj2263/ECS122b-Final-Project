@@ -1,6 +1,5 @@
 #include "suffixTree.h"
 #include <iostream>
-#include <unordered_map> // Required c++11 support.
 #include <string>
 #include <cassert>
 #include <ctime>
@@ -8,9 +7,6 @@
 using namespace std;
 
 // TODO Add proper debug messages using macros.
-
-// The initial tree contains one node i.e. root node so count = 1;
-int Node::noOfNodes = 1;
 
 // Hash key for the edges would be the node from where edge is arising and the
 // first character.
@@ -21,15 +17,6 @@ struct Key {
     int nodeID;
     int asciiChar;
 };
-
-/*
- * Edges are being stored in a hash table for better access time.
- * I was planning to use map instead of unorderedMap, but since map keeps the
- * elements in ordered fashion, it's average case time complexity is logn.
- * On the other hand, unorderedmap has a average case constant time complexity.
- * Key would be an integer which would be a function of nodeID and asciiChar
- */
-unordered_map <long, Edge> edgeHash;
 
 /*
  * Insert an edge into the hash table
@@ -78,7 +65,7 @@ void suffixTree::migrateToClosestParent() {
         // Above will always return a valid edge as we call this method after
         // adding above.
         if(e.startNode == -1) {
-            cout <<  rootNode << " " << startIndex << " " << Input[startIndex] << endl;
+            cout << rootNode << " " << startIndex << " " << Input[startIndex] << "\n" << Input << endl;
         }
         assert(e.startNode != -1);
         int labelLength = e.endLabelIndex - e.startLabelIndex;
@@ -88,11 +75,13 @@ void suffixTree::migrateToClosestParent() {
             startIndex += labelLength + 1;
             rootNode = e.endNode;
             if (startIndex <= endIndex) {
+
                 e = Edge::findEdge(e.endNode, Input[startIndex]);
-          if(e.startNode == -1) {
-            cout <<  rootNode << " " << startIndex << " " << Input[startIndex] << endl;
-        }
-               assert(e.startNode != -1);
+                if(e.startNode == -1) {
+                    cout << rootNode << " " << startIndex << " " << Input[startIndex] << "\n" << Input<<  endl;
+                }
+
+                assert(e.startNode != -1);
                 labelLength = e.endLabelIndex - e.startLabelIndex;
             }
         }
@@ -185,6 +174,7 @@ void carryPhase(suffixTree &tree, int lastIndex) {
 }
 
 bool search(string pattern) {
+
     int len = pattern.length();
     // Starting from 0 we start searching the pattern.
     Edge e = Edge::findEdge(0, pattern[0]);
@@ -193,29 +183,29 @@ bool search(string pattern) {
     int i = -1;
     if (e.startNode != -1) {
         while(i < len) {
-            cout << "Search:\tEdge: " << e.startNode << " " << e.endNode << " : "
-                << Input[e.startLabelIndex]  << " " << Input[e.endLabelIndex] << " I: " << i << endl;
+        //    cout << "Search:\tEdge: " << e.startNode << " " << e.endNode << " : "
+        //        << Input[e.startLabelIndex]  << " " << Input[e.endLabelIndex] << " I: " << i << endl;
             // Match the pattern on this edge.
             iter = 0;
             // Match this edge as much as possible.
             while (e.endLabelIndex >= e.startLabelIndex + iter)
                     {
-                        cout << "Search:\tmatching " << Input[e.startLabelIndex + iter] << " "
-                             << pattern[i + iter + 1]
-                            << " at index: " << e.startLabelIndex + iter << endl;
+                    //    cout << "Search:\tmatching " << Input[e.startLabelIndex + iter] << " "
+                    //         << pattern[i + iter + 1]
+                    //        << " at index: " << e.startLabelIndex + iter << endl;
                         // If character matches we increase the iterator
                         // otherwise we are done. No match.
                         if (Input[e.startLabelIndex + iter] == pattern[i + iter + 1]) {
                             iter++;
                             // If we have a match in the middle then we are done.
                             if (i + iter  + 1 >= len) {
-                                cout << "Search:\tWe have a match ending at "
-                                     << e.startLabelIndex + iter  - 1 << endl;
+                            //    cout << "Search:\tWe have a match ending at "
+                            //         << e.startLabelIndex + iter  - 1 << endl;
                                 return true;
                             }
                         }
                         else {
-                            cout << "Search:\tMatch not found, matched only upto index:" << i+iter << endl;
+                        //    cout << "Search:\tMatch not found, matched only upto index:" << i+iter << endl;
                             return false;
                         }
                    }
@@ -226,14 +216,14 @@ bool search(string pattern) {
             // Now we need to find another edge to match.
             e = Edge::findEdge(e.endNode, pattern[i + iter + 1]);
             if (e.startNode == -1) {
-                cout << "Search:\tMatch not found, matched only upto " << i + iter
-                     << " " << pattern[i + iter + 1]<< endl;
+            //    cout << "Search:\tMatch not found, matched only upto " << i + iter
+            //         << " " << pattern[i + iter + 1]<< endl;
                 return false;
                 }
             i+=(iter);
         }
     }
-    cout << "Search:\tMatched :D " << iter << " " << pattern << endl;
+    //cout << "Search:\tMatched :D " << iter << " " << pattern << endl;
     return true;
 }
 
