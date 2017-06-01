@@ -11,7 +11,6 @@ void Edge::printID () {
 long Edge::returnHashKey(int nodeID, int c) {
     // long contor = (1/2)*(nodeID + c)*(nodeID + c + 1) + c;
     // return contor;
-    return (long)(nodeID + 
-                  (((long)c) << 59));
+    return (long)(nodeID +
+                  (((long)c) << 57));
 }
-

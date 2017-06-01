@@ -34,3 +34,9 @@ add_custom_command(TARGET GeneralizedSuffixTreeTests
                    COMMAND GeneralizedSuffixTreeTests
                    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
                    COMMENT "Running GeneralizedSuffixTreeTests" VERBATIM)
+
+########## make the sanity test executable for LongestCommonSubstring
+add_executable(LongestCommonSubstrSanityTest longestCommonSubstrSanityTest.cpp)
+target_link_libraries(LongestCommonSubstrSanityTest SuffixTreeLib)
+target_link_libraries(LongestCommonSubstrSanityTest gtest)
+target_link_libraries(LongestCommonSubstrSanityTest pthread)

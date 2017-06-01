@@ -42,9 +42,10 @@ void Edge::remove() {
  */
 Edge Edge::findEdge(int node, int asciiChar) {
     long key = returnHashKey(node, asciiChar);
+    //cout << "findEdge, node " << node << " and char " << asciiChar << " got key " << key << endl;
     unordered_map<long, Edge>::const_iterator search = edgeHash.find(key);
     if (search != edgeHash.end()) {
-    //    cout << "Entry found for " << node << " " << asciiChar << endl;
+    //  cout << "Entry found for " << node << " " << asciiChar << endl;
         return edgeHash.at(key);
     }
 
@@ -179,6 +180,10 @@ void carryPhase(suffixTree &tree, int lastIndex) {
 
 bool search(string pattern) {
 
+    if ("" == pattern) {
+        //cout << "searching for empty string" << endl;
+        return true;
+    }
     int len = pattern.length();
     // Starting from 0 we start searching the pattern.
     Edge e = Edge::findEdge(0, pattern[0]);
@@ -278,18 +283,24 @@ void carryPhase(suffixTree &tree, int lastIndex, int firstLength, int secondLeng
         parentNode = tree.rootNode;
 
         if (tree.endReal()) {
+            //cout << "endReal " << tree.startIndex << " " << tree.endIndex << endl;
             e = Edge::findEdge(tree.rootNode, Input[lastIndex]);
-            if (e.startNode != -1)
+            if (e.startNode != -1){
+                //cout << "edge found, start node is " << e.startNode << " end node is " << e.endNode << endl;
+                //cout << tree.rootNode << " " << Input[lastIndex] << endl;
                 break;
+            }
         }
         // If previoustree ends in between an edge, then we need to find that
         // edge and match after that.
         else {
             e = Edge::findEdge(tree.rootNode, Input[tree.startIndex]);
             int diff = tree.endIndex - tree.startIndex;
-            if (Input[e.startLabelIndex + diff + 1] == Input[lastIndex])
+            if (Input[e.startLabelIndex + diff + 1] == Input[lastIndex]){
                 // We have a match
+                //cout << "we have a match" << endl;
                 break;
+            }
             //If match was not found this way, then we need to break this edge
             // and add a node and insert the string.
       //      cout << " breaking edge " << endl;
@@ -432,18 +443,25 @@ void collectLabel(Node* root){
 string getString(Node* node){
 
     string ret;
+    if (nullptr == node){
+        //cout << "current node is null" << endl;
+        return ret;
+    }
     // If the node is root, return the empty string.
     if (node->isRoot()) {
         return ret;
     }
-    
+
     // Read the incoming edge and make sure such edge exists.
     auto edge = node->incomeEdge;
     if (nullptr == edge) {
+        //cout << "narupo" << endl;
         return ret;
     }
 
     // Read the parent node from the edge.
+    //cout << "currNode is " << node->nodeID << endl;
+    //cout << "acessing index " << edge->startNode << endl;
     auto parentNode = nodeArray[edge->startNode];
     // Collect the string represented by current edge.
     int head;
@@ -468,7 +486,7 @@ string getString(Node* node){
 string findLongestCommonSubstr(){
 
     int maxLength = 0;
-    Node* maxNode;
+    Node* maxNode = nullptr;
 
     for (int i = 0; i < nodeArray.size(); i++) {
         Node* node = &nodeArray[i];
@@ -496,6 +514,8 @@ void buildGenralizedSuffixTree(suffixTree &tree, int firstLength, int secondLeng
         carryPhase(tree, i, firstLength, secondLength);
         //printAllEdges();
     }
+    //printAllEdges();
+
     // Link all nodes based on the hash tabel and construct the tree/
     linkNodes();
     // collect string labels for internal nodes.

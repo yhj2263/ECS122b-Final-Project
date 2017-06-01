@@ -40,9 +40,8 @@ int main () {
     suffixTree tree (0, 0, -1);
     // Allocating memory to the array of nodes.
     nodeArray.resize(2*inputLength);
-
     // Build the generalized suffix tree
     buildGenralizedSuffixTree(tree, firstLength, secondLength);
-
-    cout << "\nThe longest common substring is " << findLongestCommonSubstr() << endl;
+    printAllEdges();
+    cout << "The longest common substring is " << findLongestCommonSubstr() << endl;
 }
