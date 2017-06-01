@@ -481,10 +481,12 @@ string getString(Node* node){
 /*
  * This funciton look at all nodes with both string delimiters and find the node
  * with largest depth. The string label from the root to that node is the longest
- * common substring of the two input strings.
+ * common substring of the two input strings. Currentlly, this function assumes
+ * there is only one longest common substring. If there exists multiple such
+ * strings, the first occurrence will be returned.
  */
 string findLongestCommonSubstr(){
-
+    // TODO Change this function to return a list of longest common substrings.
     int maxLength = 0;
     Node* maxNode = nullptr;
 
@@ -522,4 +524,17 @@ void buildGenralizedSuffixTree(suffixTree &tree, int firstLength, int secondLeng
     collectLabel(&nodeArray[0]);
     // Set depth for internal nodes.
     setDepth(&nodeArray[0]);
+}
+
+/*
+ * Clear and reset all global variables to the initial state;
+ */
+void clearTree() {
+
+    Input.clear();
+    inputLength = 0;
+    nodeArray.clear();
+    edgeHash.clear();
+    Node::noOfNodes = 1;
+
 }

@@ -139,7 +139,7 @@ TEST(GeneralizedSuffixTreeSanityTest, SubStringMatching) {
  * substring of at least length |S|. This test check for the length of the
  * returned longest common substring by comparing with the length of S.
  */
-TEST(GeneralizedSuffixTreeSanityTest, LengthOfMatchTest) {
+TEST(LongestCommonSubstrSanityTest, ExtendSameStringTest) {
     std::default_random_engine generator;
     std::uniform_int_distribution<int> stringDist(97, 122); // used to build random string
     std::uniform_int_distribution<int> intDist(0, RANDOM_STRING_SIZE - 1); // used to generate random substring size
@@ -215,6 +215,10 @@ TEST(GeneralizedSuffixTreeSanityTest, LengthOfMatchTest) {
         nodeArray.clear();
         edgeHash.clear();
     }
+}
+
+TEST(LongestCommonSubstrSanityTest, RandomStringTest) {
+    // TODO Add this test
 }
 
 int main(int argc, char** argv) {

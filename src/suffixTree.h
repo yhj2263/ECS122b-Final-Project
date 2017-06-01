@@ -7,11 +7,10 @@
 #include <iostream>
 #include <vector>
 
-extern string Input;
+extern std::string Input;
 extern int inputLength;
-//extern Node * nodeArray;
-extern vector<Node> nodeArray;
-extern unordered_map <long, Edge> edgeHash;
+extern std::vector<Node> nodeArray;
+extern std::unordered_map <long, Edge> edgeHash;
 
 class suffixTree {
     public:
@@ -48,7 +47,8 @@ void carryPhase(suffixTree &tree, int lastIndex, int firstLength, int secondLeng
 void linkNodes();
 void collectLabel(Node* root);
 void setDepth(Node* root);
-string findLongestCommonSubstr();
-string getString(Node* node);
+void clearTree();
+std::string findLongestCommonSubstr();
+std::string getString(Node* node);
 
 #endif

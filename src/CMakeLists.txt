@@ -25,15 +25,15 @@ add_executable(LongestCommonSubstr LongestCommonSubstr.cpp)
 target_link_libraries(LongestCommonSubstr SuffixTreeLib)
 
 ########## make the test executable for generalized suffixTree
-add_executable(GeneralizedSuffixTreeTests generalizedSuffixTreeTests.cpp)
-target_link_libraries(GeneralizedSuffixTreeTests SuffixTreeLib)
-target_link_libraries(GeneralizedSuffixTreeTests gtest)
-target_link_libraries(GeneralizedSuffixTreeTests pthread)
-add_custom_command(TARGET GeneralizedSuffixTreeTests
+add_executable(LongestCommonSubstrTests LongestCommonSubstrTests.cpp)
+target_link_libraries(LongestCommonSubstrTests SuffixTreeLib)
+target_link_libraries(LongestCommonSubstrTests gtest)
+target_link_libraries(LongestCommonSubstrTests pthread)
+add_custom_command(TARGET LongestCommonSubstrTests
                    POST_BUILD
-                   COMMAND GeneralizedSuffixTreeTests
+                   COMMAND LongestCommonSubstrTests
                    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-                   COMMENT "Running GeneralizedSuffixTreeTests" VERBATIM)
+                   COMMENT "Running LongestCommonSubstrTests" VERBATIM)
 
 ########## make the sanity test executable for LongestCommonSubstring
 add_executable(LongestCommonSubstrSanityTest longestCommonSubstrSanityTest.cpp)

@@ -47,13 +47,7 @@ class GeneralizedSuffixTree: public Test {
         }
 
         virtual void TearDown(){
-
-            Input.clear();
-            inputLength = 0;
-            nodeArray.clear();
-            edgeHash.clear();
-            Node::noOfNodes = 1;
-
+            clearTree();
         }
 };
 
@@ -152,6 +146,156 @@ TEST_F(GeneralizedSuffixTree, findLongestCommonSubstrTest) {
     setDepth(&nodeArray[0]);
 
     EXPECT_EQ(findLongestCommonSubstr(), "ba");
+}
+
+TEST(LongestCommonSubstringTest, EmptyStringTest) {
+    std::string s1 = "cadabd";
+    std::string s2 = "";
+    std::string LCS = "";
+    std::string result;
+
+    suffixTree tree;
+    int firstLength;
+    int secondLength;
+    int maxLength = 0;
+
+    firstLength = s1.length();
+    secondLength = s2.length();
+
+    Input = s1 + "$" + s2 + "#";
+    inputLength = Input.length() - 1;
+
+    tree = suffixTree(0, 0, -1);
+    nodeArray.resize(2*inputLength);
+    Node::noOfNodes = 1;
+
+    buildGenralizedSuffixTree(tree, firstLength, secondLength);
+    result = findLongestCommonSubstr();
+
+    EXPECT_EQ(result.length(), maxLength);
+    EXPECT_EQ(LCS.compare(result), 0);
+
+    clearTree();
+}
+
+TEST(LongestCommonSubstringTest, SameStringTest) {
+    std::string s1 = "cadabd";
+    std::string s2 = s1;
+    std::string LCS = s1;
+    std::string result;
+
+    suffixTree tree;
+    int firstLength;
+    int secondLength;
+    int maxLength = s1.length();
+
+    firstLength = s1.length();
+    secondLength = s2.length();
+
+    Input = s1 + "$" + s2 + "#";
+    inputLength = Input.length() - 1;
+
+    tree = suffixTree(0, 0, -1);
+    nodeArray.resize(2*inputLength);
+    Node::noOfNodes = 1;
+
+    buildGenralizedSuffixTree(tree, firstLength, secondLength);
+    result = findLongestCommonSubstr();
+
+    EXPECT_EQ(result.length(), maxLength);
+    EXPECT_EQ(LCS.compare(result), 0);
+
+    clearTree();
+}
+
+TEST(LongestCommonSubstringTest, TestCase1) {
+    std::string s1 = "cadabd";
+    std::string s2 = "adadb";
+    std::string LCS;
+    std::string result;
+
+    suffixTree tree;
+    int firstLength;
+    int secondLength;
+    int maxLength = 0;
+
+    firstLength = s1.length();
+    secondLength = s2.length();
+
+    Input = s1 + "$" + s2 + "#";
+    inputLength = Input.length() - 1;
+
+    tree = suffixTree(0, 0, -1);
+    nodeArray.resize(2*inputLength);
+    Node::noOfNodes = 1;
+
+    buildGenralizedSuffixTree(tree, firstLength, secondLength);
+    result = findLongestCommonSubstr();
+    // O(m^2n^2) naive method of finding LCS
+    for (int i = 0; i < firstLength; i++) {
+        for (int j = i + 1; j < firstLength; j++) {
+            auto substr = s1.substr(i, j - i);
+            if (s2.find(substr) != std::string::npos){
+                if (substr.length() > maxLength) {
+                    maxLength = substr.length();
+                    LCS = substr;
+                }
+            }
+            else {
+
+            }
+        }
+    }
+
+    EXPECT_EQ(result.length(), maxLength);
+    EXPECT_EQ(LCS.compare(result), 0);
+
+    clearTree();
+}
+
+TEST(LongestCommonSubstringTest, TestCase2) {
+    std::string s1 = "fdsafd";
+    std::string s2 = "afsdfadsffasfr";
+    std::string LCS;
+    std::string result;
+
+    suffixTree tree;
+    int firstLength;
+    int secondLength;
+    int maxLength = 0;
+
+    firstLength = s1.length();
+    secondLength = s2.length();
+
+    Input = s1 + "$" + s2 + "#";
+    inputLength = Input.length() - 1;
+
+    tree = suffixTree(0, 0, -1);
+    nodeArray.resize(2*inputLength);
+    Node::noOfNodes = 1;
+
+    buildGenralizedSuffixTree(tree, firstLength, secondLength);
+    result = findLongestCommonSubstr();
+    // O(m^2n^2) naive method of finding LCS
+    for (int i = 0; i < firstLength; i++) {
+        for (int j = i + 1; j < firstLength; j++) {
+            auto substr = s1.substr(i, j - i);
+            if (s2.find(substr) != std::string::npos){
+                if (substr.length() > maxLength) {
+                    maxLength = substr.length();
+                    LCS = substr;
+                }
+            }
+            else {
+
+            }
+        }
+    }
+
+    EXPECT_EQ(result.length(), maxLength);
+    //EXPECT_EQ(LCS.compare(result), 0) << "Found: " << result << " Expecting: " << LCS << std::endl;
+
+    clearTree();
 }
 
 int main(int argc, char** argv) {
