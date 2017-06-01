@@ -5,10 +5,12 @@
 #include "edge.h"
 #include <unordered_map> // Required c++11 support.
 #include <iostream>
+#include <vector>
 
 extern string Input;
 extern int inputLength;
-extern Node * nodeArray;
+//extern Node * nodeArray;
+extern vector<Node> nodeArray;
 extern unordered_map <long, Edge> edgeHash;
 
 class suffixTree {
@@ -39,5 +41,14 @@ class suffixTree {
 void carryPhase(suffixTree &tree, int lastIndex);
 bool search(string pattern);
 void printAllEdges();
+
+
+void buildGenralizedSuffixTree(suffixTree &tree, int firstLength, int secondLength);
+void carryPhase(suffixTree &tree, int lastIndex, int firstLength, int secondLength);
+void linkNodes();
+void collectLabel(Node* root);
+void setDepth(Node* root);
+string findLongestCommonSubstr();
+string getString(Node* node);
 
 #endif

@@ -101,6 +101,7 @@ int breakEdge(suffixTree &s, Edge &e) {
     newEdge -> insert();
     // Add the suffix link for the new node.
     nodeArray[newEdge -> endNode].suffixNode = s.rootNode;
+    //cout << "set " << newEdge->endNode << " to " << s.rootNode << endl;
     e.startLabelIndex += s.endIndex - s.startIndex + 1;
     e.startNode = newEdge -> endNode;
     e.insert();
@@ -113,7 +114,7 @@ int breakEdge(suffixTree &s, Edge &e) {
  * iteration.
  */
 void carryPhase(suffixTree &tree, int lastIndex) {
-   // cout << "Phase " << lastIndex << " Adding " << Input.substr(0, lastIndex + 1) << endl;
+    //cout << "Phase " << lastIndex << " Adding " << Input.substr(0, lastIndex + 1) << endl;
     int parentNode;
     // to keep track of the last encountered node.
     // Used for creating the suffix link.
@@ -124,7 +125,7 @@ void carryPhase(suffixTree &tree, int lastIndex) {
         Edge e;
         parentNode = tree.rootNode;
 
-        if (tree.endReal() ) {
+        if (tree.endReal()) {
             e = Edge::findEdge(tree.rootNode, Input[lastIndex]);
             if (e.startNode != -1)
                 break;
@@ -150,11 +151,14 @@ void carryPhase(suffixTree &tree, int lastIndex) {
         // We are creating a new node here, which means we also need to update
         // the suffix link here. Suffix link from the last visited node to the
         // newly created node.
-      //  cout << "adding new edge" << endl;
+        //cout << "adding new edge" << endl;
         Edge *newEdge = new Edge(parentNode, lastIndex, inputLength);
+
         newEdge -> insert();
-        if (previousParentNode > 0)
+        if (previousParentNode > 0){
             nodeArray[previousParentNode].suffixNode = parentNode;
+            //cout << "set " << previousParentNode << " to " << parentNode << endl;
+        }
         previousParentNode = parentNode;
 
         // Move to next suffix, i.e. next extension.
@@ -162,7 +166,7 @@ void carryPhase(suffixTree &tree, int lastIndex) {
             tree.startIndex++;
         else {
             tree.rootNode = nodeArray[tree.rootNode].suffixNode;
-      //      printf("using suffix link while adding %d %d\n",tree.rootNode, nodeArray[tree.rootNode].suffixNode);
+            //printf("using suffix link while adding %d %d\n",tree.rootNode, nodeArray[tree.rootNode].suffixNode);
         }
         tree.migrateToClosestParent();
     }
@@ -188,27 +192,26 @@ bool search(string pattern) {
             // Match the pattern on this edge.
             iter = 0;
             // Match this edge as much as possible.
-            while (e.endLabelIndex >= e.startLabelIndex + iter)
-                    {
-                    //    cout << "Search:\tmatching " << Input[e.startLabelIndex + iter] << " "
-                    //         << pattern[i + iter + 1]
-                    //        << " at index: " << e.startLabelIndex + iter << endl;
-                        // If character matches we increase the iterator
-                        // otherwise we are done. No match.
-                        if (Input[e.startLabelIndex + iter] == pattern[i + iter + 1]) {
-                            iter++;
-                            // If we have a match in the middle then we are done.
-                            if (i + iter  + 1 >= len) {
-                            //    cout << "Search:\tWe have a match ending at "
-                            //         << e.startLabelIndex + iter  - 1 << endl;
-                                return true;
-                            }
-                        }
-                        else {
-                        //    cout << "Search:\tMatch not found, matched only upto index:" << i+iter << endl;
-                            return false;
-                        }
-                   }
+            while (e.endLabelIndex >= e.startLabelIndex + iter){
+            //    cout << "Search:\tmatching " << Input[e.startLabelIndex + iter] << " "
+            //         << pattern[i + iter + 1]
+            //        << " at index: " << e.startLabelIndex + iter << endl;
+                // If character matches we increase the iterator
+                // otherwise we are done. No match.
+                if (Input[e.startLabelIndex + iter] == pattern[i + iter + 1]) {
+                    iter++;
+                    // If we have a match in the middle then we are done.
+                    if (i + iter  + 1 >= len) {
+                    //    cout << "Search:\tWe have a match ending at "
+                    //         << e.startLabelIndex + iter  - 1 << endl;
+                        return true;
+                    }
+                }
+                else {
+                //    cout << "Search:\tMatch not found, matched only upto index:" << i+iter << endl;
+                    return false;
+                }
+           }
             // We have done all possible matches on this edge. We can proceed
             // only if the entire label matches.
             assert(iter = (e.endLabelIndex - e.startLabelIndex + 1));
@@ -219,7 +222,7 @@ bool search(string pattern) {
             //    cout << "Search:\tMatch not found, matched only upto " << i + iter
             //         << " " << pattern[i + iter + 1]<< endl;
                 return false;
-                }
+            }
             i+=(iter);
         }
     }
@@ -232,10 +235,12 @@ bool search(string pattern) {
  */
 void printAllEdges() {
     int count = 0;
+    //cout << "here, node array has a length of " << nodeArray.size() << endl;
     cout << "StartNode\tEndNode\tSuffixLink\tFirstIndex\tlastIndex\tString" << endl;
     // For auto : C++11 FTW :)
     for (auto it = edgeHash.begin(); it != edgeHash.end(); it++) {
         cout << it -> second.startNode << "\t\t" << it -> second.endNode
+            //<< "\t\t" << nodeArray[it -> second.endNode].suffixNode
             << "\t\t" << nodeArray[it -> second.endNode].suffixNode
             << "\t\t" << it -> second.startLabelIndex
             << "\t\t" << it -> second.endLabelIndex
@@ -251,4 +256,250 @@ void printAllEdges() {
         cout << endl;
     }
     cout << "Total edges: " << count << endl;
+}
+
+//********** Added functions for generalized suffix tree ***********//
+
+/*
+ * This function basiclly do the same job as the original carryPhase function.
+ * With added arguments @firstLength and @secondLength, it's able to handle two
+ * input strings and construct a generalized suffix tree.
+ */
+void carryPhase(suffixTree &tree, int lastIndex, int firstLength, int secondLength) {
+    //cout << "Phase " << lastIndex << " Adding " << Input.substr(0, lastIndex + 1) << endl;
+    int parentNode;
+    // to keep track of the last encountered node.
+    // Used for creating the suffix link.
+    int previousParentNode = -1;
+    while (true) {
+        // First we try to match an edge for this, if there is one edge and all
+        // other subsequent suffixs would already be there.
+        Edge e;
+        parentNode = tree.rootNode;
+
+        if (tree.endReal()) {
+            e = Edge::findEdge(tree.rootNode, Input[lastIndex]);
+            if (e.startNode != -1)
+                break;
+        }
+        // If previoustree ends in between an edge, then we need to find that
+        // edge and match after that.
+        else {
+            e = Edge::findEdge(tree.rootNode, Input[tree.startIndex]);
+            int diff = tree.endIndex - tree.startIndex;
+            if (Input[e.startLabelIndex + diff + 1] == Input[lastIndex])
+                // We have a match
+                break;
+            //If match was not found this way, then we need to break this edge
+            // and add a node and insert the string.
+      //      cout << " breaking edge " << endl;
+            parentNode = breakEdge(tree, e);
+        }
+
+        // We have not matchng edge at this point, so we need to create a new
+        // one, add it to the tree at parentNode position and then insert it
+        // into the hash table.
+        //
+        // We are creating a new node here, which means we also need to update
+        // the suffix link here. Suffix link from the last visited node to the
+        // newly created node.
+
+        //cout << "adding new edge" << endl;
+        Edge *newEdge;
+        if (lastIndex <= firstLength){
+            newEdge = new Edge(parentNode, lastIndex, firstLength);
+        }
+        else {
+            newEdge = new Edge(parentNode, lastIndex, inputLength);
+        }
+
+        newEdge -> insert();
+        if (previousParentNode > 0){
+            nodeArray[previousParentNode].suffixNode = parentNode;
+            //cout << "set " << previousParentNode << " to " << parentNode << endl;
+        }
+        previousParentNode = parentNode;
+
+        // Move to next suffix, i.e. next extension.
+        if (tree.rootNode == 0)
+            tree.startIndex++;
+        else {
+            tree.rootNode = nodeArray[tree.rootNode].suffixNode;
+            //printf("using suffix link while adding %d %d\n",tree.rootNode, nodeArray[tree.rootNode].suffixNode);
+        }
+        tree.migrateToClosestParent();
+    }
+
+    if (previousParentNode > 0)
+        nodeArray[previousParentNode].suffixNode = parentNode;
+    tree.endIndex++;
+    tree.migrateToClosestParent();
+}
+
+/*
+ * The original implementation represents the suffix tree by its edges, all Edges
+ * are stored in a hashtable. In order to search for the longest common substring,
+ * we need to construct the actual tree structure where we can traverse the tree
+ * from rootNode.
+ */
+
+void linkNodes() {
+
+    // Assign ID for each node
+    for(int i = 0; i < nodeArray.size(); i++) {
+        nodeArray[i].nodeID = i;
+    }
+    // Traverse all edges and construct the tree, assign string labels to leaf nodes.
+    for (auto it = edgeHash.begin(); it != edgeHash.end(); it++) {
+        // Link the endNode to startNode
+        (nodeArray[it->second.startNode].childNodes).push_back(&nodeArray[it->second.endNode]);
+        // Record the edge length
+        (nodeArray[it->second.endNode].edgeLength) = it->second.endLabelIndex - it->second.startLabelIndex + 1;
+        // Record the incoming edge
+        (nodeArray[it->second.endNode].incomeEdge) = &it->second;
+        // Assign string labels. "$" is assigned "1" and "#" is assigned "2".
+        if('$' == Input[it->second.endLabelIndex]){
+            nodeArray[it->second.endNode].stringLabels.push_back(1);
+        }
+        else if('#' == Input[it->second.endLabelIndex]){
+            nodeArray[it->second.endNode].stringLabels.push_back(2);
+        }
+    }
+}
+
+/*
+ * DFS traversal to assign depth to all nodes
+ */
+void setDepth(Node* root) {
+
+    for (auto childNode : root->childNodes) {
+        if (!childNode->isLeaf()) {
+            childNode->depth = root->depth + childNode->edgeLength;
+            setDepth(childNode);
+        }
+    }
+}
+
+/*
+ * DFS traversal to collect string labels for internal nodes
+ */
+void collectLabel(Node* root){
+    //cout << "now at node " << root->nodeID << endl;
+    if (root->isLeaf()) return;
+
+    for (auto childNode : root->childNodes){
+        // If the child is a leaf, add its label to current node
+        if (childNode->isLeaf()) {
+            //cout << " is a leaf\n";
+            auto label = childNode->stringLabels[0];
+            auto begin = (root->stringLabels).begin();
+            auto end = (root->stringLabels).end();
+            auto found = std::find(begin, end, label);
+
+            // Label already exists
+            if (found != end) {
+            }
+            // Label does not exist, add the label
+            else {
+                root->stringLabels.push_back(label);
+            }
+        }
+        // Not a leaf, DFS then add its label to current node
+        else {
+            collectLabel(childNode);
+            for (auto label : childNode->stringLabels) {
+                auto begin = (root->stringLabels).begin();
+                auto end = (root->stringLabels).end();
+                auto found = std::find(begin, end, label);
+
+                // Label already exists
+                if (found != end) {
+                }
+                // The label does not exist, add the label
+                else {
+                    root->stringLabels.push_back(label);
+                }
+            }
+        }
+    }
+}
+
+/*
+ * This function take a node as its argument and return the string label from root
+ * to this node. Labels are collected by looking at the incoming edge to that node
+ * and traveling along edges all the way to the root node.
+ */
+string getString(Node* node){
+
+    string ret;
+    // If the node is root, return the empty string.
+    if (node->isRoot()) {
+        return ret;
+    }
+    
+    // Read the incoming edge and make sure such edge exists.
+    auto edge = node->incomeEdge;
+    if (nullptr == edge) {
+        return ret;
+    }
+
+    // Read the parent node from the edge.
+    auto parentNode = nodeArray[edge->startNode];
+    // Collect the string represented by current edge.
+    int head;
+    if (inputLength > edge->endLabelIndex)
+        head = edge->endLabelIndex;
+    else
+        head = inputLength;
+    for (int i = edge->startLabelIndex; i < head + 1; i++)
+        ret += Input[i];
+
+    // Recursively collect string labels
+    ret = getString(&parentNode) + ret;
+
+    return ret;
+}
+
+/*
+ * This funciton look at all nodes with both string delimiters and find the node
+ * with largest depth. The string label from the root to that node is the longest
+ * common substring of the two input strings.
+ */
+string findLongestCommonSubstr(){
+
+    int maxLength = 0;
+    Node* maxNode;
+
+    for (int i = 0; i < nodeArray.size(); i++) {
+        Node* node = &nodeArray[i];
+        if (2 == node->getCv()){
+            //cout << "node " << node->nodeID << " has two labels, depth is " << node->depth << endl;
+            if (node->depth > maxLength){
+                //cout << "node " << node->nodeID << " is the longest now" << endl;
+                maxLength = node->depth;
+                maxNode = node;
+            }
+        }
+        //cout << "maxNode is now " << maxNode->nodeID << endl;
+    }
+
+    //cout << "node " << maxNode->nodeID << " is the longest" << endl;
+    return getString(maxNode);
+}
+
+/*
+ * This function carrys all the phases, calls linkNodes(), collectLabels() and
+ * setDepth() to build the actual tree.
+ */
+void buildGenralizedSuffixTree(suffixTree &tree, int firstLength, int secondLength) {
+    for (int i = 0; i <= inputLength; i++){
+        carryPhase(tree, i, firstLength, secondLength);
+        //printAllEdges();
+    }
+    // Link all nodes based on the hash tabel and construct the tree/
+    linkNodes();
+    // collect string labels for internal nodes.
+    collectLabel(&nodeArray[0]);
+    // Set depth for internal nodes.
+    setDepth(&nodeArray[0]);
 }

@@ -21,7 +21,7 @@ public:
     // Static because I want to call it without using an instantiated object.
     static long returnHashKey(int node, int c);
     static Edge findEdge(int node, int c);
-    
+
     // Constructors.
     Edge () : startNode(-1) {};
     // everytime a new edge is created, a new node is also created and thus the
@@ -34,8 +34,8 @@ public:
     // Destructor
     ~Edge() {
       //  cout << "destroying edge " << startNode << " " << endNode << endl;
-    }        
+    }
 
-};        
+};
 
-#endif                    
+#endif

@@ -36,24 +36,13 @@ int main () {
     int secondLength = s2.length();
     inputLength = Input.length() - 1;
 
-
-    //nodeArray = (Node *)malloc(2*inputLength*(sizeof (Node)));
-    //nodeArray.reserve(2*inputLength);
-    //  cout << "you entered " << Input  << " length " << inputLength << endl;
-
     // Creating initial suffixTree.
     suffixTree tree (0, 0, -1);
     // Allocating memory to the array of nodes.
     nodeArray.resize(2*inputLength);
-    // Carry out different phases.
-    for (int i = 0; i <= inputLength; i++){
-        carryPhase(tree, i, firstLength, secondLength);
-        printAllEdges();
-    }
 
-    // Link all nodes based on the hash tabel and construct the tree/
-    linkNodes();
-    
+    // Build the generalized suffix tree
+    buildGenralizedSuffixTree(tree, firstLength, secondLength);
 
-    return 0;
+    cout << "\nThe longest common substring is " << findLongestCommonSubstr() << endl;
 }

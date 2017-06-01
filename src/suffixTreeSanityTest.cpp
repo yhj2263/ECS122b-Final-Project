@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <random>
 #include <string>
+#include <vector>
 
 using testing::Test;
 
@@ -11,7 +12,8 @@ string Input;
 int inputLength;
 
 // Array of nodes.
-Node * nodeArray;
+//Node * nodeArray;
+std::vector<Node> nodeArray;
 
 // The initial tree contains one node i.e. root node so count = 1;
 int Node::noOfNodes = 1;
@@ -75,7 +77,8 @@ TEST(SuffixTreeSanityTest, SubstringMatch) {
         // For aligning indices
         inputLength = Input.length() - 1;
         // Allocating memory to the array of nodes
-        nodeArray = (Node *)malloc(2*inputLength*(sizeof (Node)));
+        //nodeArray = (Node *)malloc(2*inputLength*(sizeof (Node)));
+        nodeArray.reserve(2*inputLength);
         //nodeArray = new Node[2*inputLength];
         suffixTree tree(0, 0, -1);
 
@@ -87,7 +90,8 @@ TEST(SuffixTreeSanityTest, SubstringMatch) {
             carryPhase(tree, i);
 
         found = search(P);
-        delete nodeArray;
+        //delete nodeArray;
+        nodeArray.clear();
         ASSERT_EQ(found, true) << T << "\n" << P << endl;
     }
 }

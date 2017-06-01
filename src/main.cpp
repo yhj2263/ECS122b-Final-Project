@@ -12,7 +12,8 @@ string Input;
 int inputLength;
 
 // We need to maintain an array of nodes.
-Node * nodeArray;
+//Node * nodeArray;
+std::vector<Node> nodeArray;
 // The initial tree contains one node i.e. root node so count = 1;
 int Node::noOfNodes = 1;
 
@@ -33,8 +34,9 @@ int main () {
   inputLength = Input.length() - 1;
 
   // Allocating memory to the array of nodes.
-  nodeArray = (Node *)malloc(2*inputLength*(sizeof (Node)));
-//  cout << "you entered " << Input  << " length " << inputLength << endl;
+  //nodeArray = (Node *)malloc(2*inputLength*(sizeof (Node)));
+  nodeArray.resize(2*inputLength);
+  //  cout << "you entered " << Input  << " length " << inputLength << endl;
 
   // Start timer.
   // Creating initial suffixTree.
