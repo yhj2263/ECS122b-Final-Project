@@ -20,23 +20,27 @@ target_link_libraries(suffixTreeSanityTest SuffixTreeLib)
 add_executable(suffixTree main.cpp)
 target_link_libraries(suffixTree SuffixTreeLib)
 
-########## make the executable for LongestCommonSubstr.cpp
-add_executable(LongestCommonSubstr LongestCommonSubstr.cpp)
-target_link_libraries(LongestCommonSubstr SuffixTreeLib)
+########## make the executable for longestCommonSubstr.cpp
+add_executable(longestCommonSubstr LongestCommonSubstr.cpp)
+target_link_libraries(longestCommonSubstr SuffixTreeLib)
 
 ########## make the test executable for generalized suffixTree
-add_executable(LongestCommonSubstrTests LongestCommonSubstrTests.cpp)
-target_link_libraries(LongestCommonSubstrTests SuffixTreeLib)
-target_link_libraries(LongestCommonSubstrTests gtest)
-target_link_libraries(LongestCommonSubstrTests pthread)
-add_custom_command(TARGET LongestCommonSubstrTests
+add_executable(longestCommonSubstrTests longestCommonSubstrTests.cpp)
+target_link_libraries(longestCommonSubstrTests SuffixTreeLib)
+target_link_libraries(longestCommonSubstrTests gtest)
+target_link_libraries(longestCommonSubstrTests pthread)
+add_custom_command(TARGET longestCommonSubstrTests
                    POST_BUILD
-                   COMMAND LongestCommonSubstrTests
+                   COMMAND longestCommonSubstrTests
                    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-                   COMMENT "Running LongestCommonSubstrTests" VERBATIM)
+                   COMMENT "Running longestCommonSubstrTests" VERBATIM)
 
 ########## make the sanity test executable for LongestCommonSubstring
-add_executable(LongestCommonSubstrSanityTest longestCommonSubstrSanityTest.cpp)
-target_link_libraries(LongestCommonSubstrSanityTest SuffixTreeLib)
-target_link_libraries(LongestCommonSubstrSanityTest gtest)
-target_link_libraries(LongestCommonSubstrSanityTest pthread)
+add_executable(longestCommonSubstrSanityTest longestCommonSubstrSanityTest.cpp)
+target_link_libraries(longestCommonSubstrSanityTest SuffixTreeLib)
+target_link_libraries(longestCommonSubstrSanityTest gtest)
+target_link_libraries(longestCommonSubstrSanityTest pthread)
+
+########## make the executable for maximalRepeats.cpp
+add_executable(maximalRepeats maximalRepeats.cpp)
+target_link_libraries(maximalRepeats SuffixTreeLib)

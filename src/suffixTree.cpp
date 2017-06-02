@@ -179,7 +179,6 @@ void carryPhase(suffixTree &tree, int lastIndex) {
 }
 
 bool search(string pattern) {
-
     if ("" == pattern) {
         //cout << "searching for empty string" << endl;
         return true;
@@ -263,7 +262,9 @@ void printAllEdges() {
     cout << "Total edges: " << count << endl;
 }
 
-//********** Added functions for generalized suffix tree ***********//
+// ****************************************************************** //
+// ********** Added functions for generalized suffix tree *********** //
+// ****************************************************************** //
 
 /*
  * This function basiclly do the same job as the original carryPhase function.
@@ -355,7 +356,6 @@ void carryPhase(suffixTree &tree, int lastIndex, int firstLength, int secondLeng
  */
 
 void linkNodes() {
-
     // Assign ID for each node
     for(int i = 0; i < nodeArray.size(); i++) {
         nodeArray[i].nodeID = i;
@@ -382,7 +382,6 @@ void linkNodes() {
  * DFS traversal to assign depth to all nodes
  */
 void setDepth(Node* root) {
-
     for (auto childNode : root->childNodes) {
         if (!childNode->isLeaf()) {
             childNode->depth = root->depth + childNode->edgeLength;
@@ -441,7 +440,6 @@ void collectLabel(Node* root){
  * and traveling along edges all the way to the root node.
  */
 string getString(Node* node){
-
     string ret;
     if (nullptr == node){
         //cout << "current node is null" << endl;
@@ -530,11 +528,31 @@ void buildGenralizedSuffixTree(suffixTree &tree, int firstLength, int secondLeng
  * Clear and reset all global variables to the initial state;
  */
 void clearTree() {
-
     Input.clear();
     inputLength = 0;
     nodeArray.clear();
     edgeHash.clear();
     Node::noOfNodes = 1;
+}
 
+// ****************************************************************** //
+// ********** Added functions for finding maximal repeats *********** //
+// ****************************************************************** //
+
+
+/*
+ * This function finds all repeated pattern based on the constructed suffix tree.
+ * Basiclly, every internal node represents a repeated substring.
+ */
+ // TODO Add ability to find maximal repeats.
+std::vector<std::string> findRepeats() {
+    std::vector<std::string> repeats;
+    for (auto node : nodeArray) {
+        if (!(node.isRoot()) && !(node.isLeaf())) {
+            auto s = getString(&node);
+            repeats.push_back(s);
+        }
+    }
+
+    return repeats;
 }

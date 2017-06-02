@@ -50,5 +50,6 @@ void setDepth(Node* root);
 void clearTree();
 std::string findLongestCommonSubstr();
 std::string getString(Node* node);
+std::vector<std::string> findRepeats();
 
 #endif
