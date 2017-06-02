@@ -44,3 +44,7 @@ target_link_libraries(longestCommonSubstrSanityTest pthread)
 ########## make the executable for maximalRepeats.cpp
 add_executable(maximalRepeats maximalRepeats.cpp)
 target_link_libraries(maximalRepeats SuffixTreeLib)
+
+########## make the executable for circular string linearization
+add_executable(circStrLinearization circStrLinearization.cpp)
+target_link_libraries(circStrLinearization SuffixTreeLib)

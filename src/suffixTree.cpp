@@ -539,7 +539,6 @@ void clearTree() {
 // ********** Added functions for finding maximal repeats *********** //
 // ****************************************************************** //
 
-
 /*
  * This function finds all repeated pattern based on the constructed suffix tree.
  * Basiclly, every internal node represents a repeated substring.
@@ -555,4 +554,64 @@ std::vector<std::string> findRepeats() {
     }
 
     return repeats;
+}
+
+// ****************************************************************** //
+// ******* Added functions for circular string linearization ******** //
+// ****************************************************************** //
+
+/*
+ *
+ */
+std::string linearCut(Node* currNode) {
+    std::string ret;
+    char minChar = '{'; // ASCII 123, right after "z".
+    Node* minNode = nullptr;
+    Edge* minEdge = nullptr;
+
+    if ((nullptr == currNode) || (currNode->isLeaf())) {
+        return ret;
+    }
+
+    for (auto node : currNode->childNodes) {
+        Edge* edge = node->incomeEdge;
+        if (nullptr == edge) {
+            std::cerr << "Edge missing between " << currNode->nodeID << " and "
+                << node->nodeID << "\n";
+            break;
+        }
+
+        if (Input[edge->startLabelIndex] < minChar) {
+            minChar = Input[edge->startLabelIndex];
+            minNode = node;
+            minEdge = edge;
+        }
+    }
+
+    if (nullptr == minNode) {
+        std::cerr << "minNode missing for node " << currNode->nodeID << "\n";
+        return ret;
+    }
+    cout << "minNode is " << minNode->nodeID << " starting with " << Input[minEdge->startLabelIndex] << "\n";
+    // TODO Maybe consider refactoring this into a single function
+    int head;
+    if (inputLength > minEdge->endLabelIndex)
+        head = minEdge->endLabelIndex;
+    else
+        head = inputLength;
+    for (int i = minEdge->startLabelIndex; i < head + 1; i++)
+        ret += Input[i];
+
+    ret = ret + linearCut(minNode);
+
+    if (currNode->isRoot()) {
+        if (ret.length() < (Input.length()-1)/2) {
+            std::cerr << "Linearization does not generate correct length\n";
+            return ret;
+        }
+
+        return ret.substr(0, (Input.length()-1)/2);
+    }
+
+    return ret;
 }
