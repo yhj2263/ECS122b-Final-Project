@@ -192,8 +192,6 @@ TEST(LongestCommonSubstrSanityTest, RandomStringTest) {
     // TODO Add this test
 }
 
-
-
 int main(int argc, char** argv) {
    testing::InitGoogleTest(&argc, argv);
    return RUN_ALL_TESTS();

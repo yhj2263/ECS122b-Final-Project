@@ -6,11 +6,6 @@ using namespace std;
 
 // TODO Add proper debug messages using macros.
 
-// Hash key for the edges would be the node from where edge is arising and the
-// first character.
-// Note: This would always be unique due to a property of suffix tree which
-// states that no two edges emerging from a node can have same character as it's
-// label
 struct Key {
     int nodeID;
     int asciiChar;
@@ -331,7 +326,7 @@ void suffixTree::carryPhase(suffixTree &tree, int lastIndex, int firstLength, in
         else {
             e = suffixTree::findEdge(tree.rootNode, Input[tree.startIndex]);
             int diff = tree.endIndex - tree.startIndex;
-            if (Input[e.startLabelIndex + diff + 1] == Input[lastIndex]){
+            if (Input[e.startLabelIndex + diff + 1] == Input[lastIndex]) {
                 // We have a match
                 break;
             }
@@ -347,14 +342,14 @@ void suffixTree::carryPhase(suffixTree &tree, int lastIndex, int firstLength, in
         // the suffix link here. Suffix link from the last visited node to the
         // newly created node.//        //cout << "adding new edge" << endl;
         Edge *newEdge;
-        if (lastIndex <= firstLength){
+        if (lastIndex <= firstLength) {
             newEdge = new Edge(parentNode, noOfNodes++, lastIndex, firstLength);
         }
         else {
             newEdge = new Edge(parentNode, noOfNodes++, lastIndex, inputLength);
         }//
         insert(*newEdge);
-        if (previousParentNode > 0){
+        if (previousParentNode > 0) {
             nodeArray[previousParentNode].suffixNode = parentNode;
             //cout << "set " << previousParentNode << " to " << parentNode << endl;
         }
@@ -367,7 +362,7 @@ void suffixTree::carryPhase(suffixTree &tree, int lastIndex, int firstLength, in
         }
         tree.migrateToClosestParent();
     }//
-    if (previousParentNode > 0){
+    if (previousParentNode > 0) {
         nodeArray[previousParentNode].suffixNode = parentNode;
     }
     tree.endIndex++;
@@ -380,6 +375,7 @@ void suffixTree::carryPhase(suffixTree &tree, int lastIndex, int firstLength, in
  * from rootNode.
  */
  void suffixTree::linkNodes() {
+    if (nodeArray.size() <= 1) return;
     // Assign ID for each node
     for(int i = 0; i < nodeArray.size(); i++) {
         nodeArray[i].nodeID = i;
@@ -415,7 +411,7 @@ void suffixTree::setDepth(Node* root) {
 /*
  * DFS traversal to collect string labels for internal nodes
  */
-void suffixTree::collectLabel(Node* root){
+void suffixTree::collectLabel(Node* root) {
     //cout << "now at node " << root->nodeID << endl;
     if (root->isLeaf()) return;
     for (auto childNode : root->childNodes){
@@ -457,7 +453,7 @@ void suffixTree::collectLabel(Node* root){
  * to this node. Labels are collected by looking at the incoming edge to that node
  * and traveling along edges all the way to the root node.
  */
-string suffixTree::getString(Node* node){
+string suffixTree::getString(Node* node) {
     string ret;
     if (nullptr == node){
         //cout << "current node is null" << endl;
@@ -496,13 +492,13 @@ string suffixTree::getString(Node* node){
  * there is only one longest common substring. If there exists multiple such
  * strings, the first occurrence will be returned.
  */
-string suffixTree::findLongestCommonSubstr(){
+string suffixTree::findLongestCommonSubstr() {
     // TODO Change this function to return a list of longest common substrings.
     int maxLength = 0;
     Node* maxNode = nullptr;
     for (int i = 0; i < nodeArray.size(); i++) {
         Node* node = &nodeArray[i];
-        if (2 == node->getCv()){
+        if (2 == node->getCv()) {
             //cout << "node " << node->nodeID << " has two labels, depth is " << node->depth << endl;
             if (node->depth > maxLength){
                 //cout << "node " << node->nodeID << " is the longest now" << endl;
@@ -560,8 +556,12 @@ std::vector<std::string> suffixTree::findRepeats() {
 // ****************************************************************** //
 // ******* Added functions for circular string linearization ******** //
 // ****************************************************************** //
+
 /*
- *
+ * This function returns the lexically smallest lienar string based on a built
+ * suffix tree. It traverses the tree starting from the root. At each internal
+ * node, it looks through the childNodes vector and locates the edge starting
+ * with the lexically smallest character and continues.
  */
 std::string suffixTree::linearCut(Node* currNode) {
     std::string ret;
@@ -569,17 +569,20 @@ std::string suffixTree::linearCut(Node* currNode) {
     Node* minNode = nullptr;
     Edge* minEdge = nullptr;
 
+    // Return if the node is a leaf.
     if ((nullptr == currNode) || (currNode->isLeaf())) {
         return ret;
     }
-
+    // Go through all childNodes and find the smallest edge
     for (auto node : currNode->childNodes) {
         Edge* edge = node->incomeEdge;
         if (nullptr == edge) {
             std::cerr << "Edge missing between " << currNode->nodeID << " and "
                 << node->nodeID << "\n";
             break;
-        }        if (Input[edge->startLabelIndex] < minChar) {
+        }
+        // Find a smaller edge, record it.
+        if (Input[edge->startLabelIndex] < minChar) {
             minChar = Input[edge->startLabelIndex];
             minNode = node;
             minEdge = edge;
@@ -589,18 +592,20 @@ std::string suffixTree::linearCut(Node* currNode) {
         std::cerr << "minNode missing for node " << currNode->nodeID << "\n";
         return ret;
     }
-    cout << "minNode is " << minNode->nodeID << " starting with " << Input[minEdge->startLabelIndex] << "\n";
+    //cout << "minNode is " << minNode->nodeID << " starting with " << Input[minEdge->startLabelIndex] << "\n";
+    // Read the label on that edge
     // TODO Maybe consider refactoring this into a single function
     int head;
     if (inputLength > minEdge->endLabelIndex)
         head = minEdge->endLabelIndex;
     else
         head = inputLength;
-    for (int i = minEdge->startLabelIndex; i < head + 1; i++){
+    for (int i = minEdge->startLabelIndex; i < head + 1; i++) {
         ret += Input[i];
     }
+    // Recursively collect the label
     ret = ret + linearCut(minNode);
-
+    // Calling this function with root returns the lexically smallest linear cut
     if (currNode->isRoot()) {
         if (ret.length() < (Input.length()-1)/2) {
             std::cerr << "Linearization does not generate correct length\n";
@@ -608,5 +613,6 @@ std::string suffixTree::linearCut(Node* currNode) {
         }
         return ret.substr(0, (Input.length()-1)/2);
     }
+
     return ret;
 }

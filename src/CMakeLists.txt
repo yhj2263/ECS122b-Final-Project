@@ -48,3 +48,20 @@ target_link_libraries(maximalRepeats SuffixTreeLib)
 ########## make the executable for circular string linearization
 add_executable(circStrLinearization circStrLinearization.cpp)
 target_link_libraries(circStrLinearization SuffixTreeLib)
+
+########## make the unit test executable for circular string linearization
+add_executable(circStrLinearizationTests circStrLinearizationTests.cpp)
+target_link_libraries(circStrLinearizationTests SuffixTreeLib)
+target_link_libraries(circStrLinearizationTests gtest)
+target_link_libraries(circStrLinearizationTests pthread)
+add_custom_command(TARGET circStrLinearizationTests
+                   POST_BUILD
+                   COMMAND circStrLinearizationTests
+                   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                   COMMENT "Running circStrLinearizationTests" VERBATIM)
+
+######### make the sanity test executable for circular string linearization
+add_executable(circStrLinearizationSanityTests circStrLinearizationSanityTests.cpp)
+target_link_libraries(circStrLinearizationSanityTests SuffixTreeLib)
+target_link_libraries(circStrLinearizationSanityTests gtest)
+target_link_libraries(circStrLinearizationSanityTests pthread)
