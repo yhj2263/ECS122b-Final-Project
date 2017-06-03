@@ -1,9 +1,13 @@
+// Copyright (c) 2017 Copyright Holder All Rights Reserved.
+
 #include "suffixTree.h"
-#include "gtest/gtest.h"
+
 #include <algorithm>
 #include <random>
 #include <string>
 #include <vector>
+
+#include "gtest/gtest.h"
 
 using testing::Test;
 
@@ -12,62 +16,59 @@ using testing::Test;
  * "aba" and "ba". The first string is ended by "$" and the second string is
  * ended by "#".
  */
-
 class GeneralizedSuffixTree: public Test {
-    public:
-        suffixTree tree;
-        std::string s1;
-        std::string s2;
-        std::string input;
-        int firstLength;
-        int secondLength;
+ public:
+    suffixTree tree;
+    std::string s1;
+    std::string s2;
+    std::string input;
+    int firstLength;
+    int secondLength;
 
-        virtual void SetUp(){
-            s1 = "aba";
-            s2 = "ba";
-            input = s1 + "$" + s2 + "#";
+    virtual void SetUp() {
+        s1 = "aba";
+        s2 = "ba";
+        input = s1 + "$" + s2 + "#";
 
-            firstLength = s1.length();
-            secondLength = s2.length();
+        firstLength = s1.length();
+        secondLength = s2.length();
 
-            tree = suffixTree(0, 0, -1);
-            tree.Input = input;
-            tree.inputLength = input.length() - 1;
-            tree.nodeArray.resize(2*(tree.inputLength));
-            tree.noOfNodes = 1;
+        tree = suffixTree(0, 0, -1);
+        tree.Input = input;
+        tree.inputLength = input.length() - 1;
+        tree.nodeArray.resize(2*(tree.inputLength));
+        tree.noOfNodes = 1;
 
-            for (int i = 0; i <= tree.inputLength; i++){
-                tree.carryPhase(tree, i, firstLength, secondLength);
-            }
-            //tree.buildGeneralizedSuffixTree(input, firstLength, secondLength);
+        for (int i = 0; i <= tree.inputLength; i++) {
+            tree.carryPhase(tree, i, firstLength, secondLength);
         }
+    }
 
-        virtual void TearDown(){
-            tree.clearTree();
-        }
+    virtual void TearDown() {
+        tree.clearTree();
+    }
 };
 
 /*
  * This test searches all possible substrings of the two input strings and
  * confirms they exist somewhere in the tree.
  */
-TEST_F(GeneralizedSuffixTree, subStringSearchTest){
-    std::vector<string> subStrings = {"aba", "ba", "a", "ab", "b"};
-    //tree.printAllEdges();
+TEST_F(GeneralizedSuffixTree, subStringSearchTest) {
+    std::vector<std::string> subStrings = {"aba", "ba", "a", "ab", "b"};
     for (auto s : subStrings) {
         EXPECT_EQ(tree.search(s), true);
     }
 }
 
-TEST_F(GeneralizedSuffixTree, linkNodesTest){
-    // TODO Think of a way to test this.
+TEST_F(GeneralizedSuffixTree, linkNodesTest) {
+    // TODO(YHJ): Think of a way to test this.
 }
 
 /*
  * This test compare all node depth set by setDepth() fucntion to their expected
  * values, make sure the depths are correctly assigned.
  */
-TEST_F(GeneralizedSuffixTree, setDepthTest){
+TEST_F(GeneralizedSuffixTree, setDepthTest) {
     ASSERT_GE(tree.nodeArray.size(), 0);
     tree.linkNodes();
     tree.setDepth(&(tree.nodeArray[0]));
@@ -88,7 +89,7 @@ TEST_F(GeneralizedSuffixTree, setDepthTest){
  * This test compares the strings labels assigned by collectLabel() funciton to their
  * expected values. Compares both C(v) values and the actual label for leaf nodes.
  */
-TEST_F(GeneralizedSuffixTree, collectLabelTest){
+TEST_F(GeneralizedSuffixTree, collectLabelTest) {
     ASSERT_GE(tree.nodeArray.size(), 0);
     tree.linkNodes();
     tree.collectLabel(&(tree.nodeArray[0]));
@@ -241,14 +242,12 @@ TEST(LongestCommonSubstringTest, TestCase1) {
     for (int i = 0; i < firstLength; i++) {
         for (int j = i + 1; j < firstLength; j++) {
             auto substr = s1.substr(i, j - i);
-            if (s2.find(substr) != std::string::npos){
+            if (s2.find(substr) != std::string::npos) {
                 if (substr.length() > maxLength) {
                     maxLength = substr.length();
                     LCS = substr;
                 }
-            }
-            else {
-
+            } else {
             }
         }
     }
@@ -262,7 +261,7 @@ TEST(LongestCommonSubstringTest, TestCase1) {
 /*
  *
  */
- // TODO This test fails, fix this.
+// TODO(YHJ): This test fails, fix this.
 TEST(LongestCommonSubstringTest, TestCase2) {
     std::string s1 = "fdsafd";
     std::string s2 = "afsdfadsffasfr";
@@ -288,25 +287,22 @@ TEST(LongestCommonSubstringTest, TestCase2) {
     for (int i = 0; i < firstLength; i++) {
         for (int j = i + 1; j < firstLength; j++) {
             auto substr = s1.substr(i, j - i);
-            if (s2.find(substr) != std::string::npos){
+            if (s2.find(substr) != std::string::npos) {
                 if (substr.length() > maxLength) {
                     maxLength = substr.length();
                     LCS = substr;
                 }
-            }
-            else {
-
+            } else {
             }
         }
     }
 
     EXPECT_EQ(result.length(), maxLength);
-    //EXPECT_EQ(LCS.compare(result), 0) << "Found: " << result << " Expecting: " << LCS << std::endl;
 
     tree.clearTree();
 }
 
 int main(int argc, char** argv) {
-   testing::InitGoogleTest(&argc, argv);
-   return RUN_ALL_TESTS();
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

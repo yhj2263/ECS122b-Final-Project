@@ -61,7 +61,7 @@ add_custom_command(TARGET circStrLinearizationTests
                    COMMENT "Running circStrLinearizationTests" VERBATIM)
 
 ######### make the sanity test executable for circular string linearization
-add_executable(circStrLinearizationSanityTests circStrLinearizationSanityTests.cpp)
-target_link_libraries(circStrLinearizationSanityTests SuffixTreeLib)
-target_link_libraries(circStrLinearizationSanityTests gtest)
-target_link_libraries(circStrLinearizationSanityTests pthread)
+add_executable(circStrLinearizationSanityTest circStrLinearizationSanityTests.cpp)
+target_link_libraries(circStrLinearizationSanityTest SuffixTreeLib)
+target_link_libraries(circStrLinearizationSanityTest gtest)
+target_link_libraries(circStrLinearizationSanityTest pthread)

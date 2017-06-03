@@ -1,9 +1,14 @@
+// Copyright (c) 2017 Copyright Holder All Rights Reserved.
+
 #include "suffixTree.h"
-#include "gtest/gtest.h"
+
 #include <algorithm>
 #include <random>
 #include <string>
 #include <vector>
+#include <utility>
+
+#include "gtest/gtest.h"
 
 using testing::Test;
 
@@ -11,8 +16,8 @@ using testing::Test;
 #define RANDOM_STRING_SIZE 100
 
 TEST(GeneralizedSuffixTreeSanityTest, SimpleTest) {
-    string s1 = "youodsa";
-    string s2 = "dsadasf";
+    std::string s1 = "youodsa";
+    std::string s2 = "dsadasf";
 
     std::string input = s1 + "$" + s2 + "#";
 
@@ -20,11 +25,10 @@ TEST(GeneralizedSuffixTreeSanityTest, SimpleTest) {
     int secondLength = s2.length();
 
     // Creating initial suffixTree.
-    suffixTree tree (0, 0, -1);
+    suffixTree tree(0, 0, -1);
     // Build the generalized suffix tree
     tree.buildGeneralizedSuffixTree(input, firstLength, secondLength);
 
-    //cout << "The longest common substring is " << findLongestCommonSubstr() << endl;
     EXPECT_EQ(tree.findLongestCommonSubstr(), "dsa");
     tree.clearTree();
 }
@@ -38,8 +42,10 @@ TEST(GeneralizedSuffixTreeSanityTest, SimpleTest) {
  */
 TEST(GeneralizedSuffixTreeSanityTest, SubStringMatching) {
     std::default_random_engine generator;
-    std::uniform_int_distribution<int> stringDist(97, 122); // used to build random string
-    std::uniform_int_distribution<int> intDist(0, RANDOM_STRING_SIZE - 1); // used to generate random substring size
+    // used to build random string
+    std::uniform_int_distribution<int> stringDist(97, 122);
+    // used to generate random substring size
+    std::uniform_int_distribution<int> intDist(0, RANDOM_STRING_SIZE - 1);
 
     // run NUM_TEST_CASES times
     for (int k = 0; k <  NUM_TEST_CASES; k++) {
@@ -62,15 +68,15 @@ TEST(GeneralizedSuffixTreeSanityTest, SubStringMatching) {
 
         // generate a random string T of size RANDOM_STRING_SIZE
         for (int i = 0; i < RANDOM_STRING_SIZE; i++) {
-            currChar = (char)stringDist(generator);
-            while((currChar <= '`') && (currChar >= '[')) {
-                currChar = (char)stringDist(generator);
+            currChar = static_cast<char>(stringDist(generator));
+            while ((currChar <= '`') && (currChar >= '[')) {
+                currChar = static_cast<char>(stringDist(generator));
             }
             S1 += currChar;
 
-            currChar = (char)stringDist(generator);
-            while((currChar <= '`') && (currChar >= '[')) {
-                currChar = (char)stringDist(generator);
+            currChar = static_cast<char>(stringDist(generator));
+            while ((currChar <= '`') && (currChar >= '[')) {
+                currChar = static_cast<char>(stringDist(generator));
             }
             S2 += currChar;
         }
@@ -92,16 +98,18 @@ TEST(GeneralizedSuffixTreeSanityTest, SubStringMatching) {
         }
         P2 += S2.substr(begin, end);
 
-        //cout << "S1 " << S1 << " S2 "  << S2 << " P1 " << P1 << " P2 " << P2 << endl;
         // Build suffix tree for T
         input = S1 + "$" + S2 + "#";
 
         suffixTree tree(0, 0, -1);
 
-        tree.buildGeneralizedSuffixTree(input, RANDOM_STRING_SIZE, RANDOM_STRING_SIZE);
+        tree.buildGeneralizedSuffixTree(input, RANDOM_STRING_SIZE,
+            RANDOM_STRING_SIZE);
 
-        EXPECT_EQ(tree.search(P1), true) << "S1 " << S1 << " S2 "  << S2 << " P1 " << P1 << " P2 " << P2 << endl;
-        EXPECT_EQ(tree.search(P2), true) << "S1 " << S1 << " S2 "  << S2 << " P1 " << P1 << " P2 " << P2 << endl;
+        EXPECT_EQ(tree.search(P1), true) << "S1 " << S1 << " S2 "  << S2
+                << " P1 " << P1 << " P2 " << P2 << endl;
+        EXPECT_EQ(tree.search(P2), true) << "S1 " << S1 << " S2 "  << S2
+                << " P1 " << P1 << " P2 " << P2 << endl;
 
         tree.clearTree();
     }
@@ -120,8 +128,10 @@ TEST(GeneralizedSuffixTreeSanityTest, SubStringMatching) {
  */
 TEST(LongestCommonSubstrSanityTest, ExtendSameStringTest) {
     std::default_random_engine generator;
-    std::uniform_int_distribution<int> stringDist(97, 122); // used to build random string
-    std::uniform_int_distribution<int> intDist(0, RANDOM_STRING_SIZE - 1); // used to generate random substring size
+    // Used to build random string
+    std::uniform_int_distribution<int> stringDist(97, 122);
+    // Used to generate random substring size
+    std::uniform_int_distribution<int> intDist(0, RANDOM_STRING_SIZE - 1);
 
     // Run NUM_TEST_CASES times
     for (int k = 0; k <  NUM_TEST_CASES; k++) {
@@ -137,11 +147,12 @@ TEST(LongestCommonSubstrSanityTest, ExtendSameStringTest) {
 
         // Randomly generate the start and end position for substring
         int randLength = intDist(generator);
-        std::uniform_int_distribution<int> posDist(0, RANDOM_STRING_SIZE - randLength - 1);
+        std::uniform_int_distribution<int> posDist(0, RANDOM_STRING_SIZE
+            - randLength - 1);
 
         // Generate a random string S of random size
         for (int i = 0; i < randLength; i++) {
-            currChar = (char)stringDist(generator);
+            currChar = static_cast<char>(stringDist(generator));
             S += currChar;
         }
 
@@ -149,23 +160,23 @@ TEST(LongestCommonSubstrSanityTest, ExtendSameStringTest) {
         // Generate a random position for S in S1
         int randPos = posDist(generator);
         for (int i = 0; i < randPos; i++) {
-            currChar = (char)stringDist(generator);
+            currChar = static_cast<char>(stringDist(generator));
             S1 += currChar;
         }
         S1 += S;
         for (int i = 0; i < (RANDOM_STRING_SIZE - randLength - randPos); i++) {
-            currChar = (char)stringDist(generator);
+            currChar = static_cast<char>(stringDist(generator));
             S1 += currChar;
         }
 
         randPos = posDist(generator);
         for (int i = 0; i < randPos; i++) {
-            currChar = (char)stringDist(generator);
+            currChar = static_cast<char>(stringDist(generator));
             S2 += currChar;
         }
         S2 += S;
         for (int i = 0; i < (RANDOM_STRING_SIZE - randLength - randPos); i++) {
-            currChar = (char)stringDist(generator);
+            currChar = static_cast<char>(stringDist(generator));
             S2 += currChar;
         }
 
@@ -178,21 +189,23 @@ TEST(LongestCommonSubstrSanityTest, ExtendSameStringTest) {
 
         suffixTree tree(0, 0, -1);
 
-        tree.buildGeneralizedSuffixTree(input, RANDOM_STRING_SIZE, RANDOM_STRING_SIZE);
+        tree.buildGeneralizedSuffixTree(input, RANDOM_STRING_SIZE,
+            RANDOM_STRING_SIZE);
 
         auto found = tree.findLongestCommonSubstr();
 
-        EXPECT_GE(found.length(), randLength) << "found " << found.length() << " expecting " << randLength << endl;
+        EXPECT_GE(found.length(), randLength) << "found "
+                << found.length() << " expecting " << randLength << endl;
 
         tree.clearTree();
     }
 }
 
 TEST(LongestCommonSubstrSanityTest, RandomStringTest) {
-    // TODO Add this test
+    // TODO(YHJ): Add this test
 }
 
 int main(int argc, char** argv) {
-   testing::InitGoogleTest(&argc, argv);
-   return RUN_ALL_TESTS();
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

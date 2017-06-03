@@ -1,9 +1,13 @@
+// Copyright (c) 2017 Copyright Holder All Rights Reserved.
+
 #include "suffixTree.h"
-#include "gtest/gtest.h"
+
 #include <algorithm>
 #include <random>
 #include <string>
 #include <vector>
+
+#include "gtest/gtest.h"
 
 using testing::Test;
 
@@ -39,15 +43,15 @@ TEST(circStrLinearizationSanityTests, RandomStringTest) {
 
         // generate a random string S of size RANDOM_STRING_SIZE
         for (int i = 0; i < RANDOM_STRING_SIZE; i++) {
-            currChar = (char)stringDist(generator);
-            while((currChar <= '`') && (currChar >= '[')) {
-                currChar = (char)stringDist(generator);
+            currChar = static_cast<char>(stringDist(generator));
+            while ((currChar <= '`') && (currChar >= '[')) {
+                currChar = static_cast<char>(stringDist(generator));
             }
             S += currChar;
         }
 
         input = S + S + "}";
-        suffixTree tree (0, 0, -1);
+        suffixTree tree(0, 0, -1);
         tree.buildTree(input);
         tree.linkNodes();
         result = tree.linearCut(&tree.nodeArray[0]);
@@ -63,12 +67,12 @@ TEST(circStrLinearizationSanityTests, RandomStringTest) {
 
         ASSERT_NE(vec.size(), 0);
         EXPECT_EQ(result.compare(vec.at(0)), 0) << "Found: " << result
-            << " Expecting: " << vec.at(0) << "\n";
+                << " Expecting: " << vec.at(0) << "\n";
         tree.clearTree();
     }
 }
 
 int main(int argc, char** argv) {
-   testing::InitGoogleTest(&argc, argv);
-   return RUN_ALL_TESTS();
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

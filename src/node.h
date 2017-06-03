@@ -1,15 +1,13 @@
-#ifndef NODE_H
-#define NODE_H
+#ifndef SRC_NODE_H_
+#define SRC_NODE_H_
 
 #include <iostream>
 #include <vector>
 
-using namespace std;
-
 class Edge;
 
 class Node {
-public:
+ public:
     int suffixNode;
     // each node has a unique ID, rootNode has ID 0.
     int nodeID;
@@ -17,36 +15,38 @@ public:
     int depth;
     // record the length of the incoming edge
     int edgeLength;
-    // TODO find a better way to store labels.
+    // TODO(YHJ): find a better way to store labels.
     Edge* incomeEdge;
     std::vector<int> stringLabels;
     // save all childNodes in a vector, a leaf node does not have any child.
     std::vector<Node*> childNodes;
 
-    Node () :
+    Node() :
         suffixNode(-1),
         nodeID(-1),
         depth(0),
         edgeLength(0),
-        incomeEdge(nullptr){};
+        incomeEdge(nullptr) {}
     ~Node() {
        //  cout << "destroying node " << id << endl;
     }
 
-    // return true if this node a leaf, false otherwise.
-    bool isLeaf(){
+    // Return true if this node a leaf, false otherwise.
+    bool isLeaf() {
         return childNodes.empty();
     }
-    // return the string label
-    std::vector<int> getStrLabel(){
+    // Return the string label
+    std::vector<int> getStrLabel() {
         return stringLabels;
     }
-    //return the C(v) value
-    int getCv(){
+    // Return the C(v) value
+    int getCv() {
         return stringLabels.size();
     }
-    bool isRoot(){
+    // Return true if the node is root(has nodeID 0)
+    bool isRoot() {
         return (0 == nodeID);
     }
 };
-#endif
+
+#endif  // SRC_NODE_H_

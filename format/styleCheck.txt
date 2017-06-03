@@ -1,0 +1,18 @@
+Ignoring ../src/CMakeLists.txt; not a valid file name (cc, h, cpp, cu, cuh)
+Ignoring ../src/Makefile; not a valid file name (cc, h, cpp, cu, cuh)
+../src/edge.h:0:  No copyright message found.  You should have a line: "Copyright [year] <Copyright Owner>"  [legal/copyright] [5]
+../src/edge.h:6:  Include the directory when naming .h files  [build/include] [4]
+../src/main.cpp:0:  No copyright message found.  You should have a line: "Copyright [year] <Copyright Owner>"  [legal/copyright] [5]
+../src/main.cpp:5:  <chrono> is an unapproved C++11 header.  [build/c++11] [5]
+../src/maximalRepeats.cpp:0:  No copyright message found.  You should have a line: "Copyright [year] <Copyright Owner>"  [legal/copyright] [5]
+../src/node.h:0:  No copyright message found.  You should have a line: "Copyright [year] <Copyright Owner>"  [legal/copyright] [5]
+../src/suffixTree.cpp:0:  No copyright message found.  You should have a line: "Copyright [year] <Copyright Owner>"  [legal/copyright] [5]
+../src/suffixTree.cpp:3:  src/suffixTree.cpp should include its header file src/suffixTree.h  [build/include] [5]
+../src/suffixTree.h:0:  No copyright message found.  You should have a line: "Copyright [year] <Copyright Owner>"  [legal/copyright] [5]
+../src/suffixTree.h:9:  Include the directory when naming .h files  [build/include] [4]
+../src/suffixTree.h:10:  Include the directory when naming .h files  [build/include] [4]
+../src/suffixTree.h:44:  Is this a non-const reference? If so, make const or use a pointer: suffixTree &tree  [runtime/references] [2]
+../src/suffixTree.h:51:  Is this a non-const reference? If so, make const or use a pointer: suffixTree &tree  [runtime/references] [2]
+../src/suffixTree.h:62:  Is this a non-const reference? If so, make const or use a pointer: Edge &e  [runtime/references] [2]
+../src/suffixTree.h:63:  Is this a non-const reference? If so, make const or use a pointer: Edge &e  [runtime/references] [2]
+../src/suffixTree.h:64:  Is this a non-const reference? If so, make const or use a pointer: Edge &e  [runtime/references] [2]

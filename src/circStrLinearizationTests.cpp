@@ -1,4 +1,11 @@
+// Copyright (c) 2017 Copyright Holder All Rights Reserved.
+
 #include "suffixTree.h"
+
+#include <string>
+#include <algorithm>
+#include <vector>
+
 #include "gtest/gtest.h"
 
 using testing::Test;
@@ -12,14 +19,14 @@ TEST(circStrLinearizationTests, EmptyStringTest) {
     // Double the string and add delimiter
     input = s + s + "{";
     // Build the initial tree
-    suffixTree tree (0, 0, -1);
+    suffixTree tree(0, 0, -1);
     tree.buildTree(input);
-    //tree.printAllEdges();
+
     tree.linkNodes();
     result = tree.linearCut(&tree.nodeArray[0]);
 
     EXPECT_EQ(result, "") << "Found: " << result
-        << " Expecting: " << "" << "\n";
+                          << " Expecting: " << "" << "\n";
     tree.clearTree();
 }
 
@@ -32,13 +39,13 @@ TEST(circStrLinearizationTests, TestCase1) {
     // Double the string and add delimiter
     input = s + s + "{";
     // Build the initial tree
-    suffixTree tree (0, 0, -1);
+    suffixTree tree(0, 0, -1);
     tree.buildTree(input);
     tree.linkNodes();
     result = tree.linearCut(&tree.nodeArray[0]);
 
-    // Naive O(n^2) way of finding the lexically smallest linear string. Iterate through
-    // all possible solution and find the smallest one.
+    // Naive O(n^2) way of finding the lexically smallest linear string.
+    // Iterate through all possible solution and find the smallest one.
 
     // Double the string
     std::string twoS = s + s;
@@ -49,7 +56,7 @@ TEST(circStrLinearizationTests, TestCase1) {
     std::sort(vec.begin(), vec.end());
 
     EXPECT_EQ(result.compare(vec.at(0)), 0) << "Found: " << result
-        << " Expecting: " << vec.at(0) << "\n";
+            << " Expecting: " << vec.at(0) << "\n";
     tree.clearTree();
 }
 
@@ -62,13 +69,13 @@ TEST(circStrLinearizationTests, TestCase2) {
     // Double the string and add delimiter
     input = s + s + "{";
     // Build the initial tree
-    suffixTree tree (0, 0, -1);
+    suffixTree tree(0, 0, -1);
     tree.buildTree(input);
     tree.linkNodes();
     result = tree.linearCut(&tree.nodeArray[0]);
 
-    // Naive O(n^2) way of finding the lexically smallest linear string. Iterate through
-    // all possible solution and find the smallest one.
+    // Naive O(n^2) way of finding the lexically smallest linear string.
+    // Iterate through all possible solution and find the smallest one.
 
     // Double the string
     std::string twoS = s + s;
@@ -79,7 +86,7 @@ TEST(circStrLinearizationTests, TestCase2) {
     std::sort(vec.begin(), vec.end());
 
     EXPECT_EQ(result.compare(vec.at(0)), 0) << "Found: " << result
-        << " Expecting: " << vec.at(0) << "\n";
+            << " Expecting: " << vec.at(0) << "\n";
     tree.clearTree();
 }
 
@@ -92,13 +99,13 @@ TEST(circStrLinearizationTests, TestCase3) {
     // Double the string and add delimiter
     input = s + s + "{";
     // Build the initial tree
-    suffixTree tree (0, 0, -1);
+    suffixTree tree(0, 0, -1);
     tree.buildTree(input);
     tree.linkNodes();
     result = tree.linearCut(&tree.nodeArray[0]);
 
-    // Naive O(n^2) way of finding the lexically smallest linear string. Iterate through
-    // all possible solution and find the smallest one.
+    // Naive O(n^2) way of finding the lexically smallest linear string.
+    // Iterate through all possible solution and find the smallest one.
 
     // Double the string
     std::string twoS = s + s;
@@ -109,7 +116,7 @@ TEST(circStrLinearizationTests, TestCase3) {
     std::sort(vec.begin(), vec.end());
 
     EXPECT_EQ(result.compare(vec.at(0)), 0) << "Found: " << result
-        << " Expecting: " << vec.at(0) << "\n";
+            << " Expecting: " << vec.at(0) << "\n";
     tree.clearTree();
 }
 
@@ -122,13 +129,13 @@ TEST(circStrLinearizationTests, TestCase4) {
     // Double the string and add delimiter
     input = s + s + "{";
     // Build the initial tree
-    suffixTree tree (0, 0, -1);
+    suffixTree tree(0, 0, -1);
     tree.buildTree(input);
     tree.linkNodes();
     result = tree.linearCut(&tree.nodeArray[0]);
 
-    // Naive O(n^2) way of finding the lexically smallest linear string. Iterate through
-    // all possible solution and find the smallest one.
+    // Naive O(n^2) way of finding the lexically smallest linear string.
+    // Iterate through all possible solution and find the smallest one.
 
     // Double the string
     std::string twoS = s + s;
@@ -139,11 +146,11 @@ TEST(circStrLinearizationTests, TestCase4) {
     std::sort(vec.begin(), vec.end());
 
     EXPECT_EQ(result.compare(vec.at(0)), 0) << "Found: " << result
-        << " Expecting: " << vec.at(0) << "\n";
+            << " Expecting: " << vec.at(0) << "\n";
     tree.clearTree();
 }
 
 int main(int argc, char** argv) {
-   testing::InitGoogleTest(&argc, argv);
-   return RUN_ALL_TESTS();
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

@@ -1,20 +1,15 @@
+// Copyright (c) 2017 Copyright Holder All Rights Reserved.
 #include "suffixTree.h"
-#include "gtest/gtest.h"
+
 #include <algorithm>
 #include <random>
 #include <string>
 #include <vector>
+#include <utility>
+
+#include "gtest/gtest.h"
 
 using testing::Test;
-
-/*
- * Edges are being stored in a hash table for better access time.
- * I was planning to use map instead of unorderedMap, but since map keeps the
- * elements in ordered fashion, it's average case time complexity is logn.
- * On the other hand, unorderedmap has a average case constant time complexity.
- * Key would be an integer which would be a function of nodeID and asciiChar
- */
-unordered_map <long, Edge> edgeHash;
 
 #define NUM_TEST_CASES 10000
 #define RANDOM_STRING_SIZE 100
@@ -26,17 +21,18 @@ unordered_map <long, Edge> edgeHash;
 //    3) Builds suffix tree for T and seach for P
 
 TEST(SuffixTreeSanityTest, SubstringMatch) {
-
     std::default_random_engine generator;
-    std::uniform_int_distribution<int> stringDist(97, 122); // used to build random string
-    std::uniform_int_distribution<int> intDist(0, RANDOM_STRING_SIZE - 1); // used to generate random substring size
+    // used to build random string.
+    std::uniform_int_distribution<int> stringDist(97, 122);
+    // used to generate random substring size.
+    std::uniform_int_distribution<int> intDist(0, RANDOM_STRING_SIZE - 1);
 
-    // run NUM_TEST_CASES times
+    // Run NUM_TEST_CASES times.
     for (int k = 0; k <  NUM_TEST_CASES; k++) {
         if ((0 == k % 2000) && (k != 0)) {
             cout << "**** " << k << " test cases passed ****" << endl;
         }
-        
+
         std::string T = "";
         std::string P = "";
 
@@ -44,7 +40,7 @@ TEST(SuffixTreeSanityTest, SubstringMatch) {
         bool found = false;
 
 
-        // randomly generate the start and end position for substring
+        // Randomly generate the start and end position for substring.
         int begin = intDist(generator);
         int end = intDist(generator);
 
@@ -52,22 +48,20 @@ TEST(SuffixTreeSanityTest, SubstringMatch) {
             std::swap(begin, end);
         }
 
-        // generate a random string T of size RANDOM_STRING_SIZE
+        // Generate a random string T of size RANDOM_STRING_SIZE
         for (int i = 0; i < RANDOM_STRING_SIZE; i++) {
-            currChar = (char)stringDist(generator);
-            while((currChar <= '`') && (currChar >= '[')) {
-                currChar = (char)stringDist(generator);
+            currChar = static_cast<char>(stringDist(generator));
+            while ((currChar <= '`') && (currChar >= '[')) {
+                currChar = static_cast<char>(stringDist(generator));
             }
             T += currChar;
         }
 
-        // generate a random substring
+        // Generate a random substring.
         P += T.substr(begin, end);
-
         suffixTree tree(0, 0, -1);
         tree.buildTree(T);
         found = tree.search(P);
-        //delete nodeArray;
         tree.clearTree();
         ASSERT_EQ(found, true) << T << "\n" << P << endl;
     }
