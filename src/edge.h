@@ -14,21 +14,14 @@ public:
     int endNode;
     int startLabelIndex;
     int endLabelIndex;
-    void printID ();
-    void insert ();
-    void remove ();
-    // node is the starting node and c is the ASCII input char.
-    // Static because I want to call it without using an instantiated object.
-    static long returnHashKey(int node, int c);
-    static Edge findEdge(int node, int c);
 
     // Constructors.
     Edge () : startNode(-1) {};
     // everytime a new edge is created, a new node is also created and thus the
     // endNode is declared as below.
-    Edge (int start, int first, int last) :
+    Edge (int start, int end, int first, int last) :
         startNode (start),
-        endNode (Node::noOfNodes++),
+        endNode (end),
         startLabelIndex (first),
         endLabelIndex (last) {};
     // Destructor

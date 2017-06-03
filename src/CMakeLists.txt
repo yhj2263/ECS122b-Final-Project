@@ -4,7 +4,7 @@ project(ECS122B-Final-Project)
 add_definitions(-std=c++1z -g)
 
 ########## Create libraries
-add_library(SuffixTreeLib suffixTree.cpp createInput.cpp edge.cpp node.cpp)
+add_library(SuffixTreeLib suffixTree.cpp)
 
 ########## Link GoogleTest
 include_directories($ENV{GMOCK_HOME}/gtest/include)

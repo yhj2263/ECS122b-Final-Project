@@ -7,16 +7,6 @@
 
 using testing::Test;
 
-// Buffer for input string.
-string Input;
-int inputLength;
-// Array of nodes
-std::vector<Node> nodeArray;
-// The initial tree contains one node i.e. root node so count = 1;
-int Node::noOfNodes = 1;
-// Edges are stored in a hash table.
-std::unordered_map <long, Edge> edgeHash;
-
 #define NUM_TEST_CASES 10000
 #define RANDOM_STRING_SIZE 100
 
@@ -24,23 +14,19 @@ TEST(GeneralizedSuffixTreeSanityTest, SimpleTest) {
     string s1 = "youodsa";
     string s2 = "dsadasf";
 
-    Input = s1 + "$" + s2 + "#";
+    std::string input = s1 + "$" + s2 + "#";
 
     int firstLength = s1.length();
     int secondLength = s2.length();
-    inputLength = Input.length() - 1;
 
     // Creating initial suffixTree.
     suffixTree tree (0, 0, -1);
-    // Allocating memory to the array of nodes.
-    nodeArray.resize(2*inputLength);
     // Build the generalized suffix tree
-    buildGenralizedSuffixTree(tree, firstLength, secondLength);
+    tree.buildGeneralizedSuffixTree(input, firstLength, secondLength);
 
     //cout << "The longest common substring is " << findLongestCommonSubstr() << endl;
-    EXPECT_EQ(findLongestCommonSubstr(), "dsa");
-    nodeArray.clear();
-    edgeHash.clear();
+    EXPECT_EQ(tree.findLongestCommonSubstr(), "dsa");
+    tree.clearTree();
 }
 
 /* Sanity check for genralized suffix tree based matching.
@@ -64,6 +50,7 @@ TEST(GeneralizedSuffixTreeSanityTest, SubStringMatching) {
         std::string S2 = "";
         std::string P1 = "";
         std::string P2 = "";
+        std::string input = "";
 
         char currChar;
         bool found = false;
@@ -107,24 +94,16 @@ TEST(GeneralizedSuffixTreeSanityTest, SubStringMatching) {
 
         //cout << "S1 " << S1 << " S2 "  << S2 << " P1 " << P1 << " P2 " << P2 << endl;
         // Build suffix tree for T
-        Input = S1 + "$" + S2 + "#";
-        // For aligning indices
-        inputLength = Input.length() - 1;
-        // Allocating memory to the array of nodes
-        //nodeArray = (Node *)malloc(2*inputLength*(sizeof (Node)));
-        nodeArray.resize(2*inputLength);
-        //nodeArray = new Node[2*inputLength];
+        input = S1 + "$" + S2 + "#";
+
         suffixTree tree(0, 0, -1);
 
-        Node::noOfNodes = 1;
+        tree.buildGeneralizedSuffixTree(input, RANDOM_STRING_SIZE, RANDOM_STRING_SIZE);
 
-        buildGenralizedSuffixTree(tree, RANDOM_STRING_SIZE, RANDOM_STRING_SIZE);
+        EXPECT_EQ(tree.search(P1), true) << "S1 " << S1 << " S2 "  << S2 << " P1 " << P1 << " P2 " << P2 << endl;
+        EXPECT_EQ(tree.search(P2), true) << "S1 " << S1 << " S2 "  << S2 << " P1 " << P1 << " P2 " << P2 << endl;
 
-        EXPECT_EQ(search(P1), true) << "S1 " << S1 << " S2 "  << S2 << " P1 " << P1 << " P2 " << P2 << endl;
-        EXPECT_EQ(search(P2), true) << "S1 " << S1 << " S2 "  << S2 << " P1 " << P1 << " P2 " << P2 << endl;
-
-        nodeArray.clear();
-        edgeHash.clear();
+        tree.clearTree();
     }
 }
 
@@ -152,6 +131,7 @@ TEST(LongestCommonSubstrSanityTest, ExtendSameStringTest) {
         std::string S = "";
         std::string S1 = "";
         std::string S2 = "";
+        std::string input = "";
 
         char currChar;
 
@@ -192,34 +172,27 @@ TEST(LongestCommonSubstrSanityTest, ExtendSameStringTest) {
         ASSERT_NE(S1.find(S), std::string::npos);
         ASSERT_NE(S2.find(S), std::string::npos);
 
-        // cout << "S1 " << S1 << " S2 "  << S2 << " S " << S << endl;
         // Build suffix tree for T
 
-        Input = S1 + "$" + S2 + "#";
-        // For aligning indices
-        inputLength = Input.length() - 1;
-        // Allocating memory to the array of nodes
-        //nodeArray = (Node *)malloc(2*inputLength*(sizeof (Node)));
-        nodeArray.resize(2*inputLength);
-        //nodeArray = new Node[2*inputLength];
+        input = S1 + "$" + S2 + "#";
+
         suffixTree tree(0, 0, -1);
 
-        Node::noOfNodes = 1;
+        tree.buildGeneralizedSuffixTree(input, RANDOM_STRING_SIZE, RANDOM_STRING_SIZE);
 
-        buildGenralizedSuffixTree(tree, RANDOM_STRING_SIZE, RANDOM_STRING_SIZE);
-
-        auto found = findLongestCommonSubstr();
+        auto found = tree.findLongestCommonSubstr();
 
         EXPECT_GE(found.length(), randLength) << "found " << found.length() << " expecting " << randLength << endl;
 
-        nodeArray.clear();
-        edgeHash.clear();
+        tree.clearTree();
     }
 }
 
 TEST(LongestCommonSubstrSanityTest, RandomStringTest) {
     // TODO Add this test
 }
+
+
 
 int main(int argc, char** argv) {
    testing::InitGoogleTest(&argc, argv);

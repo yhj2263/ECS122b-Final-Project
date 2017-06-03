@@ -7,17 +7,6 @@
 
 using testing::Test;
 
-// Buffer for input string.
-string Input;
-int inputLength;
-
-// Array of nodes.
-//Node * nodeArray;
-std::vector<Node> nodeArray;
-
-// The initial tree contains one node i.e. root node so count = 1;
-int Node::noOfNodes = 1;
-
 /*
  * Edges are being stored in a hash table for better access time.
  * I was planning to use map instead of unorderedMap, but since map keeps the
@@ -44,7 +33,10 @@ TEST(SuffixTreeSanityTest, SubstringMatch) {
 
     // run NUM_TEST_CASES times
     for (int k = 0; k <  NUM_TEST_CASES; k++) {
-
+        if ((0 == k % 2000) && (k != 0)) {
+            cout << "**** " << k << " test cases passed ****" << endl;
+        }
+        
         std::string T = "";
         std::string P = "";
 
@@ -72,26 +64,11 @@ TEST(SuffixTreeSanityTest, SubstringMatch) {
         // generate a random substring
         P += T.substr(begin, end);
 
-        // Build suffix tree for T
-        Input = T;
-        // For aligning indices
-        inputLength = Input.length() - 1;
-        // Allocating memory to the array of nodes
-        //nodeArray = (Node *)malloc(2*inputLength*(sizeof (Node)));
-        nodeArray.reserve(2*inputLength);
-        //nodeArray = new Node[2*inputLength];
         suffixTree tree(0, 0, -1);
-
-        Node::noOfNodes = 1;
-        edgeHash.clear();
-        // Carry out different phases.
-
-        for (int i = 0; i <= inputLength; i++)
-            carryPhase(tree, i);
-
-        found = search(P);
+        tree.buildTree(T);
+        found = tree.search(P);
         //delete nodeArray;
-        nodeArray.clear();
+        tree.clearTree();
         ASSERT_EQ(found, true) << T << "\n" << P << endl;
     }
 }

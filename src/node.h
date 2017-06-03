@@ -10,7 +10,6 @@ class Edge;
 
 class Node {
 public:
-    static int noOfNodes;
     int suffixNode;
     // each node has a unique ID, rootNode has ID 0.
     int nodeID;
@@ -25,7 +24,11 @@ public:
     std::vector<Node*> childNodes;
 
     Node () :
-        suffixNode(-1), nodeID(-1), depth(0), edgeLength(0), incomeEdge(nullptr) {};
+        suffixNode(-1),
+        nodeID(-1),
+        depth(0),
+        edgeLength(0),
+        incomeEdge(nullptr){};
     ~Node() {
        //  cout << "destroying node " << id << endl;
     }
