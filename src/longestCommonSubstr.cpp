@@ -4,6 +4,7 @@
 #include <iostream>
 #include <unordered_map>  // Required c++11 support.
 #include <string>
+#include <algorithm>
 
 using std::cout;
 
@@ -11,33 +12,30 @@ int main() {
     std::string s1;
     std::string s2;
     std::string input;
+
+    // Prompt two input strings from the user
     std::cout << "Enter the first string" << std::endl;
     getline(std::cin, s1);
     std::cout << "Enter the second string" << std::endl;
     getline(std::cin, s2);
 
-    s1 = "pjkjjnxqmheyjrctfsvtdarfrrfrixnsmsmsdmtdvyooxerplkevagygfeiazghdkfxxmadpwioxtowsvshgqbgcydvzdfhhqnbx";
-    s2 = "ynzgjpiowxnfnwjqeyeqooymbxsonwtumvbimfqfcwopeebcincbwqloyvotehdvrxkbxqajxyxvjebpnboncdofnbxjqbhuduve";
-
-    if (s2.find("nbx") != std::string::npos) { cout << "nbx exists" << "\n";}
-
-    // For aligning indices
+    // Concatenate strings and append delimiters.
     input = s1 + "$" + s2 + "#";
 
     int firstLength = s1.length();
     int secondLength = s2.length();
 
-    cout << "s1: " <<  firstLength << " s2: " << secondLength << "\n";
-
     suffixTree tree(0, 0, -1);
     tree.buildGeneralizedSuffixTree(input, firstLength, secondLength);
-    //tree.printAllEdges();
+    tree.printAllEdges();
+    // Find the LCS by using GST.
     auto result = tree.findLongestCommonSubstr();
     std::sort(result.begin(), result.end());
     if (0 == result.size()) {
         cout << "These two string has no common substring\n";
     } else if (1 == result.size()) {
-        cout << "The longest common substring is " << result[0] << "\n";
+        cout << "The longest common substring is of size " << result[0].length()
+            << "\n" << result[0] << "\n";
     } else {
         cout << "There are " << result.size() << " strings of size "
             << result[0].length() << " : \n";
@@ -45,7 +43,8 @@ int main() {
             cout << s << "\n";
         }
     }
-
+    /*
+    // Compare the answer with naive method.
     std::vector<std::string> LCS;
     int maxLength = 0;
     // O(m^2n^2) naive method of finding LCS
@@ -80,5 +79,6 @@ int main() {
     for (auto s : LCS) {
         cout << s << "\n";
     }
+    */
     return 0;
 }

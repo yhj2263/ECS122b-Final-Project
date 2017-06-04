@@ -80,7 +80,7 @@ TEST(GeneralizedSuffixTreeSanityTest, SubStringMatching) {
             S2 += currChar;
         }
 
-        // generate a random substring for S1
+        // Generate a random substring for S1
         begin = intDist(generator);
         end = intDist(generator);
 
@@ -183,7 +183,6 @@ TEST(LongestCommonSubstrSanityTest, ExtendSameStringTest) {
         ASSERT_NE(S2.find(S), std::string::npos);
 
         // Build suffix tree for T
-
         input = S1 + "$" + S2 + "#";
 
         suffixTree tree(0, 0, -1);
@@ -272,7 +271,6 @@ TEST(LongestCommonSubstrSanityTest, RandomStringTest) {
                 }
             }
         }
-
 
         std::sort(LCS.begin(), LCS.end());
         // Remove duplicate strings

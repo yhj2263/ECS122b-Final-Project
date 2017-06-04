@@ -20,7 +20,6 @@ int main() {
     // Creating initial suffixTree.
     suffixTree tree(0, 0, -1);
 
-
     auto end = std::chrono::high_resolution_clock::now();
     tree.buildTree(input);
     tree.printAllEdges();

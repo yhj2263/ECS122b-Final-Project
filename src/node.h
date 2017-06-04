@@ -9,15 +9,16 @@ class Edge;
 class Node {
  public:
     int suffixNode;
-    // each node has a unique ID, rootNode has ID 0.
+    // Each node has a unique ID, rootNode has ID 0.
     int nodeID;
-    // the depth used to find longest common substring.
+    // The depth used to find longest common substring.
     int depth;
-    // record the length of the incoming edge
+    // Record the length of the incoming edge
     int edgeLength;
     // TODO(YHJ): find a better way to store labels.
-    Edge* incomeEdge;
     std::vector<int> stringLabels;
+    // The incoming edge to this node
+    Edge* incomeEdge;
     // save all childNodes in a vector, a leaf node does not have any child.
     std::vector<Node*> childNodes;
 

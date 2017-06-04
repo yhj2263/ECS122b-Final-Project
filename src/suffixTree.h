@@ -45,7 +45,6 @@ class suffixTree {
     bool search(std::string pattern);
     void printAllEdges();
 
-
     void buildGeneralizedSuffixTree(std::string input, int firstLength,
          int secondLength);
     void carryPhase(suffixTree &tree, int lastIndex, int firstLength,

@@ -26,9 +26,7 @@ class Edge {
         startLabelIndex(first),
         endLabelIndex(last) {}
     // Destructor
-    ~Edge() {
-      //  cout << "destroying edge " << startNode << " " << endNode << endl;
-    }
+    ~Edge() {}
 };
 
 #endif  // SRC_EDGE_H_

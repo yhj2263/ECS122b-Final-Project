@@ -150,9 +150,8 @@ TEST_F(GeneralizedSuffixTree, findLongestCommonSubstrTest) {
 }
 
 /*
- *
+ * This test inputs empty string and expects the returned string has size of 0
  */
-
 TEST(LongestCommonSubstringTest, EmptyStringTest) {
     std::string s1 = "cadabd";
     std::string s2 = "";
@@ -176,15 +175,14 @@ TEST(LongestCommonSubstringTest, EmptyStringTest) {
     result = tree.findLongestCommonSubstr();
 
     EXPECT_EQ(result.size(), 0);
-    //EXPECT_EQ(, 0);
 
     tree.clearTree();
 }
 
 /*
- *
+ * This test inputs two identical strings and expects the returned string to be
+ * the same as input.
  */
-
 TEST(LongestCommonSubstringTest, SameStringTest) {
     std::string s1 = "cadabd";
     std::string s2 = s1;
@@ -214,7 +212,7 @@ TEST(LongestCommonSubstringTest, SameStringTest) {
 }
 
 /*
- *
+ * s1 = cadabd, s2 = adadb
  */
 
 TEST(LongestCommonSubstringTest, TestCase1) {
@@ -276,9 +274,9 @@ TEST(LongestCommonSubstringTest, TestCase1) {
 }
 
 /*
- *
+ * This test inputs two string whose LCS's are not unique, using the O(m^2n^2)
+ * naive method to confirm solutions.
  */
-// TODO(YHJ): This test fails, fix this.
 TEST(LongestCommonSubstringTest, TestCase2) {
     std::string s1 = "fdsafd";
     std::string s2 = "afsdfadsffasfr";
@@ -300,6 +298,7 @@ TEST(LongestCommonSubstringTest, TestCase2) {
     tree.buildGeneralizedSuffixTree(input, firstLength, secondLength);
 
     result = tree.findLongestCommonSubstr();
+
     // O(m^2n^2) naive method of finding LCS, note this method generate
     // duplicate substrings.
     for (int i = 0; i < firstLength; i++) {
@@ -335,6 +334,10 @@ TEST(LongestCommonSubstringTest, TestCase2) {
     tree.clearTree();
 }
 
+/*
+ * This test inputs two string whose LCS is of length 1. To make sure the
+ * function works with single character.
+ */
 TEST(LongestCommonSubstringTest, TestCase3) {
     std::string s1 = "ba";
     std::string s2 = "aaa";
@@ -379,12 +382,12 @@ TEST(LongestCommonSubstringTest, TestCase3) {
         }
     }
 
-
-
     std::sort(LCS.begin(), LCS.end());
     std::sort(result.begin(), result.end());
+    // Remove duplicate
     auto it = unique(LCS.begin(), LCS.end());
     LCS.resize(std::distance(LCS.begin(), it));
+
     ASSERT_EQ(result.size(), LCS.size());
 
     for (int i = 0; i < result.size(); i++) {

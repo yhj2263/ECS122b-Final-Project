@@ -71,7 +71,6 @@ Edge suffixTree::findEdge(int node, int asciiChar) {
     if (search != edgeHash.end()) {
         return edgeHash.at(key);
     }
-
     // Return an invalid edge if the entry is not found.
     return Edge();
 }
@@ -81,7 +80,6 @@ void suffixTree::migrateToClosestParent() {
     // If the current suffix tree is ending on a node, this condition is already
     // met.
     if (endReal()) {
-        //     cout << "Nothing needs to be done for migrating" << endl;
     } else {
         Edge e = suffixTree::findEdge(rootNode, Input[startIndex]);
         // Above will always return a valid edge as we call this method after
@@ -172,7 +170,6 @@ void suffixTree::carryPhase(suffixTree &tree, int lastIndex) {
         // We are creating a new node here, which means we also need to update
         // the suffix link here. Suffix link from the last visited node to the
         // newly created node.
-
         Edge *newEdge = new Edge(parentNode, noOfNodes++, lastIndex,
              inputLength);
 
@@ -215,19 +212,27 @@ bool suffixTree::search(std::string pattern) {
     if (e.startNode != -1) {
         while (i < len) {
             iter = 0;
+            cout << "Search:\tEdge: " << e.startNode << " " << e.endNode
+                << " : " << Input[e.startLabelIndex]  << " "
+                << Input[e.endLabelIndex] << " I: " << i << endl;
             // Match this edge as much as possible.
             while (e.endLabelIndex >= e.startLabelIndex + iter) {
+                cout << "Search:\tmatching " << Input[e.startLabelIndex + iter]
+                    << " "  << pattern[i + iter + 1]
+                    << " at index: " << e.startLabelIndex + iter << endl;
                 // If character matches we increase the iterator
                 // otherwise we are done. No match.
                 if (Input[e.startLabelIndex + iter] == pattern[i + iter + 1]) {
                     iter++;
                     // If we have a match in the middle then we are done.
                     if (i + iter  + 1 >= len) {
-                        //    cout << "Search:\tWe have a match ending at "
-                        //         << e.startLabelIndex + iter  - 1 << endl;
+                            cout << "Search:\tWe have a match ending at "
+                                 << e.startLabelIndex + iter  - 1 << endl;
                         return true;
                     }
                 } else {
+                    cout << "Search:\tMatch not found, matched only upto index:"
+                        << i+iter << endl;
                     return false;
                 }
             }
@@ -321,7 +326,7 @@ void suffixTree::carryPhase(suffixTree &tree, int lastIndex, int firstLength,
         //
         // We are creating a new node here, which means we also need to update
         // the suffix link here. Suffix link from the last visited node to the
-        // newly created node.//        //cout << "adding new edge" << endl;
+        // newly created node.
         Edge *newEdge;
         if (lastIndex <= firstLength) {
             newEdge = new Edge(parentNode, noOfNodes++, lastIndex, firstLength);
@@ -377,6 +382,7 @@ void suffixTree::linkNodes() {
         }
     }
 }
+
 /*
  * DFS traversal to assign depth to all nodes
  */
@@ -388,6 +394,7 @@ void suffixTree::setDepth(Node* root) {
         }
     }
 }
+
 /*
  * DFS traversal to collect string labels for internal nodes
  */
@@ -458,22 +465,25 @@ std::string suffixTree::getString(Node* node) {
 }
 
 /*
- * This funciton look at all nodes with both string delimiters and find the node
+ * This funciton looks at all nodes with both string delimiters and finds the node
  * with largest depth. The string label from the root to that node is the
- * longest common substring of the two input strings. Currentlly, this function
- * assumes there is only one longest common substring. If there exists multiple
- * such string, the first occurrence will be returned.
+ * longest common substring of the two input strings. If there exists multiple
+ * such string, they will be all returned in a vector.
  */
 std::vector<std::string> suffixTree::findLongestCommonSubstr() {
-    // TODO(YHJ): Change this function to return a list
     std::vector<std::string> currLongest;
     int maxLength = 0;
     for (int i = 0; i < nodeArray.size(); i++) {
         Node* node = &nodeArray[i];
+        // The path label to current node is a common substring iff both two
+        // string delimiters are in its subtree.
         if (2 == node->getCv()) {
+            // If the node depth is greater than current max, set its depth as 
+            // new max, clear the return list and save it.
+            // Else if the node depth is the same as current max, save it to the
+            // return list.
             if (node->depth > maxLength) {
                 maxLength = node->depth;
-                //maxNode = node;
                 currLongest.clear();
                 currLongest.push_back(getString(node));
             } else if ((node->depth == maxLength) && (maxLength != 0)) {
