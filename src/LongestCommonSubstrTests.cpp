@@ -144,8 +144,9 @@ TEST_F(GeneralizedSuffixTree, findLongestCommonSubstrTest) {
     tree.linkNodes();
     tree.collectLabel(&(tree.nodeArray[0]));
     tree.setDepth(&(tree.nodeArray[0]));
-
-    EXPECT_EQ(tree.findLongestCommonSubstr(), "ba");
+    auto result = tree.findLongestCommonSubstr();
+    ASSERT_EQ(result.size(), 1);
+    EXPECT_EQ(result[0], "ba");
 }
 
 /*
@@ -156,8 +157,8 @@ TEST(LongestCommonSubstringTest, EmptyStringTest) {
     std::string s1 = "cadabd";
     std::string s2 = "";
     std::string input = "";
-    std::string LCS = "";
-    std::string result;
+    std::vector<std::string> LCS;
+    std::vector<std::string> result;
 
     suffixTree tree;
     int firstLength;
@@ -174,8 +175,8 @@ TEST(LongestCommonSubstringTest, EmptyStringTest) {
 
     result = tree.findLongestCommonSubstr();
 
-    EXPECT_EQ(result.length(), maxLength);
-    EXPECT_EQ(LCS.compare(result), 0);
+    EXPECT_EQ(result.size(), 0);
+    //EXPECT_EQ(, 0);
 
     tree.clearTree();
 }
@@ -188,8 +189,8 @@ TEST(LongestCommonSubstringTest, SameStringTest) {
     std::string s1 = "cadabd";
     std::string s2 = s1;
     std::string input = "";
-    std::string LCS = s1;
-    std::string result;
+    std::vector<std::string> LCS = {s1};
+    std::vector<std::string> result;
 
     suffixTree tree;
     int firstLength;
@@ -206,8 +207,8 @@ TEST(LongestCommonSubstringTest, SameStringTest) {
 
     result = tree.findLongestCommonSubstr();
 
-    EXPECT_EQ(result.length(), maxLength);
-    EXPECT_EQ(LCS.compare(result), 0);
+    ASSERT_EQ(result.size(), 1);
+    EXPECT_EQ(LCS[0].compare(result[0]), 0);
 
     tree.clearTree();
 }
@@ -220,8 +221,8 @@ TEST(LongestCommonSubstringTest, TestCase1) {
     std::string s1 = "cadabd";
     std::string s2 = "adadb";
     std::string input = "";
-    std::string LCS;
-    std::string result;
+    std::vector<std::string> LCS;
+    std::vector<std::string> result;
 
     suffixTree tree;
     int firstLength;
@@ -238,22 +239,38 @@ TEST(LongestCommonSubstringTest, TestCase1) {
     tree.buildGeneralizedSuffixTree(input, firstLength, secondLength);
 
     result = tree.findLongestCommonSubstr();
-    // O(m^2n^2) naive method of finding LCS
+    // O(m^2n^2) naive method of finding LCS, note this method generate
+    // duplicate substrings.
     for (int i = 0; i < firstLength; i++) {
-        for (int j = i + 1; j < firstLength; j++) {
-            auto substr = s1.substr(i, j - i);
+        for (int j = i; j < firstLength; j++) {
+            std::string substr = "";
+            if (j == i) {
+                substr = s1[i];
+            } else {
+             substr = s1.substr(i, j - i + 1);
+            }
             if (s2.find(substr) != std::string::npos) {
                 if (substr.length() > maxLength) {
                     maxLength = substr.length();
-                    LCS = substr;
+                    LCS.clear();
+                    LCS.push_back(substr);
+                } else if (substr.length() == maxLength) {
+                    LCS.push_back(substr);
+                } else {
                 }
-            } else {
             }
         }
     }
 
-    EXPECT_EQ(result.length(), maxLength);
-    EXPECT_EQ(LCS.compare(result), 0);
+
+
+    std::sort(LCS.begin(), LCS.end());
+    std::sort(result.begin(), result.end());
+
+    ASSERT_EQ(result.size(), LCS.size());
+    for (int i = 0; i < result.size(); i++) {
+        EXPECT_EQ(LCS[i].compare(result[i]), 0);
+    }
 
     tree.clearTree();
 }
@@ -266,8 +283,8 @@ TEST(LongestCommonSubstringTest, TestCase2) {
     std::string s1 = "fdsafd";
     std::string s2 = "afsdfadsffasfr";
     std::string input = "";
-    std::string LCS;
-    std::string result;
+    std::vector<std::string> LCS;
+    std::vector<std::string> result;
 
     suffixTree tree;
     int firstLength;
@@ -283,21 +300,96 @@ TEST(LongestCommonSubstringTest, TestCase2) {
     tree.buildGeneralizedSuffixTree(input, firstLength, secondLength);
 
     result = tree.findLongestCommonSubstr();
-    // O(m^2n^2) naive method of finding LCS
+    // O(m^2n^2) naive method of finding LCS, note this method generate
+    // duplicate substrings.
     for (int i = 0; i < firstLength; i++) {
-        for (int j = i + 1; j < firstLength; j++) {
-            auto substr = s1.substr(i, j - i);
+        for (int j = i; j < firstLength; j++) {
+            std::string substr = "";
+            if (j == i) {
+                substr = s1[i];
+            } else {
+             substr = s1.substr(i, j - i + 1);
+            }
             if (s2.find(substr) != std::string::npos) {
                 if (substr.length() > maxLength) {
                     maxLength = substr.length();
-                    LCS = substr;
+                    LCS.clear();
+                    LCS.push_back(substr);
+                } else if (substr.length() == maxLength) {
+                    LCS.push_back(substr);
+                } else {
                 }
-            } else {
             }
         }
     }
 
-    EXPECT_EQ(result.length(), maxLength);
+
+    ASSERT_EQ(result.size(), LCS.size());
+    std::sort(LCS.begin(), LCS.end());
+    std::sort(result.begin(), result.end());
+
+    for (int i = 0; i < result.size(); i++) {
+        EXPECT_EQ(LCS[i].compare(result[i]), 0);
+    }
+
+    tree.clearTree();
+}
+
+TEST(LongestCommonSubstringTest, TestCase3) {
+    std::string s1 = "ba";
+    std::string s2 = "aaa";
+    std::string input = "";
+    std::vector<std::string> LCS;
+    std::vector<std::string> result;
+
+    suffixTree tree;
+    int firstLength;
+    int secondLength;
+    int maxLength = 0;
+
+    firstLength = s1.length();
+    secondLength = s2.length();
+
+    input = s1 + "$" + s2 + "#";
+
+    tree = suffixTree(0, 0, -1);
+    tree.buildGeneralizedSuffixTree(input, firstLength, secondLength);
+
+    result = tree.findLongestCommonSubstr();
+    // O(m^2n^2) naive method of finding LCS, note this method generate
+    // duplicate substrings.
+    for (int i = 0; i < firstLength; i++) {
+        for (int j = i; j < firstLength; j++) {
+            std::string substr = "";
+            if (j == i) {
+                substr = s1[i];
+            } else {
+             substr = s1.substr(i, j - i + 1);
+            }
+            if (s2.find(substr) != std::string::npos) {
+                if (substr.length() > maxLength) {
+                    maxLength = substr.length();
+                    LCS.clear();
+                    LCS.push_back(substr);
+                } else if (substr.length() == maxLength) {
+                    LCS.push_back(substr);
+                } else {
+                }
+            }
+        }
+    }
+
+
+
+    std::sort(LCS.begin(), LCS.end());
+    std::sort(result.begin(), result.end());
+    auto it = unique(LCS.begin(), LCS.end());
+    LCS.resize(std::distance(LCS.begin(), it));
+    ASSERT_EQ(result.size(), LCS.size());
+
+    for (int i = 0; i < result.size(); i++) {
+        EXPECT_EQ(LCS[i].compare(result[i]), 0);
+    }
 
     tree.clearTree();
 }

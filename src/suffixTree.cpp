@@ -464,20 +464,24 @@ std::string suffixTree::getString(Node* node) {
  * assumes there is only one longest common substring. If there exists multiple
  * such string, the first occurrence will be returned.
  */
-std::string suffixTree::findLongestCommonSubstr() {
+std::vector<std::string> suffixTree::findLongestCommonSubstr() {
     // TODO(YHJ): Change this function to return a list
+    std::vector<std::string> currLongest;
     int maxLength = 0;
-    Node* maxNode = nullptr;
     for (int i = 0; i < nodeArray.size(); i++) {
         Node* node = &nodeArray[i];
         if (2 == node->getCv()) {
             if (node->depth > maxLength) {
                 maxLength = node->depth;
-                maxNode = node;
+                //maxNode = node;
+                currLongest.clear();
+                currLongest.push_back(getString(node));
+            } else if ((node->depth == maxLength) && (maxLength != 0)) {
+                currLongest.push_back(getString(node));
             }
         }
     }
-    return getString(maxNode);
+    return currLongest;
 }
 
 /*

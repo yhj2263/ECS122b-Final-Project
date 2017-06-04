@@ -54,10 +54,11 @@ class suffixTree {
     void collectLabel(Node* root);
     void setDepth(Node* root);
     void clearTree();
-    std::string findLongestCommonSubstr();
+
     std::string getString(Node* node);
     std::string linearCut(Node* currNode);
     std::vector<std::string> findRepeats();
+    std::vector<std::string> findLongestCommonSubstr();
 
     void insert(Edge &e);
     void remove(Edge &e);

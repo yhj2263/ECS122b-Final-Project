@@ -28,8 +28,9 @@ TEST(GeneralizedSuffixTreeSanityTest, SimpleTest) {
     suffixTree tree(0, 0, -1);
     // Build the generalized suffix tree
     tree.buildGeneralizedSuffixTree(input, firstLength, secondLength);
-
-    EXPECT_EQ(tree.findLongestCommonSubstr(), "dsa");
+    auto vec = tree.findLongestCommonSubstr();
+    ASSERT_EQ(vec.size(), 1);
+    EXPECT_EQ(vec[0], "dsa");
     tree.clearTree();
 }
 
@@ -42,12 +43,11 @@ TEST(GeneralizedSuffixTreeSanityTest, SimpleTest) {
  */
 TEST(GeneralizedSuffixTreeSanityTest, SubStringMatching) {
     std::default_random_engine generator;
-    // used to build random string
+    // Used to build random string
     std::uniform_int_distribution<int> stringDist(97, 122);
-    // used to generate random substring size
+    // Used to generate random substring size
     std::uniform_int_distribution<int> intDist(0, RANDOM_STRING_SIZE - 1);
-
-    // run NUM_TEST_CASES times
+    // Run NUM_TEST_CASES times
     for (int k = 0; k <  NUM_TEST_CASES; k++) {
         if ((0 == k % 2000) && (k != 0)) {
             cout << "**** " << k << " test cases passed ****" << endl;
@@ -60,7 +60,6 @@ TEST(GeneralizedSuffixTreeSanityTest, SubStringMatching) {
 
         char currChar;
         bool found = false;
-
 
         // randomly generate the start and end position for substring
         int begin;
@@ -192,10 +191,10 @@ TEST(LongestCommonSubstrSanityTest, ExtendSameStringTest) {
         tree.buildGeneralizedSuffixTree(input, RANDOM_STRING_SIZE,
             RANDOM_STRING_SIZE);
 
-        auto found = tree.findLongestCommonSubstr();
-
-        EXPECT_GE(found.length(), randLength) << "found "
-                << found.length() << " expecting " << randLength << endl;
+        auto result = tree.findLongestCommonSubstr();
+        ASSERT_GE(result.size(), 0);
+        EXPECT_GE(result[0].length(), randLength) << "found "
+                << result[0].length() << " expecting " << randLength << endl;
 
         tree.clearTree();
     }
@@ -203,6 +202,93 @@ TEST(LongestCommonSubstrSanityTest, ExtendSameStringTest) {
 
 TEST(LongestCommonSubstrSanityTest, RandomStringTest) {
     // TODO(YHJ): Add this test
+    std::default_random_engine generator;
+    // Used to build random string
+    std::uniform_int_distribution<int> stringDist(97, 122);
+    // Used to generate random substring size
+    std::uniform_int_distribution<int> intDist(0, RANDOM_STRING_SIZE - 1);
+    // Run NUM_TEST_CASES times
+    for (int k = 0; k <  NUM_TEST_CASES; k++) {
+        if ((0 == k % 2000) && (k != 0)) {
+            cout << "**** " << k << " test cases passed ****" << endl;
+        }
+        std::string S1 = "";
+        std::string S2 = "";
+        std::string input = "";
+        std::vector<std::string> LCS;
+        std::vector<std::string> result;
+
+        char currChar;
+
+        int firstLength;
+        int secondLength;
+        int maxLength = 0;
+
+        // generate a random string T of size RANDOM_STRING_SIZE
+        for (int i = 0; i < RANDOM_STRING_SIZE; i++) {
+            currChar = static_cast<char>(stringDist(generator));
+            while ((currChar <= '`') && (currChar >= '[')) {
+                currChar = static_cast<char>(stringDist(generator));
+            }
+            S1 += currChar;
+
+            currChar = static_cast<char>(stringDist(generator));
+            while ((currChar <= '`') && (currChar >= '[')) {
+                currChar = static_cast<char>(stringDist(generator));
+            }
+            S2 += currChar;
+        }
+
+        input = S1 + "$" + S2 + "#";
+
+        firstLength = S1.length();
+        secondLength = S2.length();
+
+        suffixTree tree(0, 0, -1);
+
+        tree.buildGeneralizedSuffixTree(input, RANDOM_STRING_SIZE,
+            RANDOM_STRING_SIZE);
+
+        result = tree.findLongestCommonSubstr();
+        // O(m^2n^2) naive method of finding LCS, note this method generate
+        // duplicate substrings.
+        for (int i = 0; i < firstLength; i++) {
+            for (int j = i; j < firstLength; j++) {
+                std::string substr = "";
+                if (j == i) {
+                    substr = S1[i];
+                } else {
+                 substr = S1.substr(i, j - i + 1);
+                }
+                if (S2.find(substr) != std::string::npos) {
+                    if (substr.length() > maxLength) {
+                        maxLength = substr.length();
+                        LCS.clear();
+                        LCS.push_back(substr);
+                    } else if (substr.length() == maxLength) {
+                        LCS.push_back(substr);
+                    } else {
+                    }
+                }
+            }
+        }
+
+
+        std::sort(LCS.begin(), LCS.end());
+        // Remove duplicate strings
+        auto it = std::unique(LCS.begin(), LCS.end());
+        LCS.resize(std::distance(LCS.begin(), it));
+
+        ASSERT_EQ(result.size(), LCS.size())
+            << "S1: " << S1 << " S2: " << S2 << "\n";
+        std::sort(result.begin(), result.end());
+
+        for (int i = 0; i < result.size(); i++) {
+            EXPECT_EQ(LCS[i].compare(result[i]), 0);
+        }
+
+        tree.clearTree();
+    }
 }
 
 int main(int argc, char** argv) {
