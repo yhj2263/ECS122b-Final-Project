@@ -212,27 +212,27 @@ bool suffixTree::search(std::string pattern) {
     if (e.startNode != -1) {
         while (i < len) {
             iter = 0;
-            cout << "Search:\tEdge: " << e.startNode << " " << e.endNode
-                << " : " << Input[e.startLabelIndex]  << " "
-                << Input[e.endLabelIndex] << " I: " << i << endl;
+            // cout << "Search:\tEdge: " << e.startNode << " " << e.endNode
+            //    << " : " << Input[e.startLabelIndex]  << " "
+            //    << Input[e.endLabelIndex] << " I: " << i << endl;
             // Match this edge as much as possible.
             while (e.endLabelIndex >= e.startLabelIndex + iter) {
-                cout << "Search:\tmatching " << Input[e.startLabelIndex + iter]
-                    << " "  << pattern[i + iter + 1]
-                    << " at index: " << e.startLabelIndex + iter << endl;
+            //    cout << "Search:\tmatching " << Input[e.startLabelIndex + iter]
+            //        << " "  << pattern[i + iter + 1]
+            //        << " at index: " << e.startLabelIndex + iter << endl;
                 // If character matches we increase the iterator
                 // otherwise we are done. No match.
                 if (Input[e.startLabelIndex + iter] == pattern[i + iter + 1]) {
                     iter++;
                     // If we have a match in the middle then we are done.
                     if (i + iter  + 1 >= len) {
-                            cout << "Search:\tWe have a match ending at "
-                                 << e.startLabelIndex + iter  - 1 << endl;
+                    //        cout << "Search:\tWe have a match ending at "
+                    //             << e.startLabelIndex + iter  - 1 << endl;
                         return true;
                     }
                 } else {
-                    cout << "Search:\tMatch not found, matched only upto index:"
-                        << i+iter << endl;
+                //    cout << "Search:\tMatch not found, matched only upto index:"
+                //        << i+iter << endl;
                     return false;
                 }
             }
@@ -478,7 +478,7 @@ std::vector<std::string> suffixTree::findLongestCommonSubstr() {
         // The path label to current node is a common substring iff both two
         // string delimiters are in its subtree.
         if (2 == node->getCv()) {
-            // If the node depth is greater than current max, set its depth as 
+            // If the node depth is greater than current max, set its depth as
             // new max, clear the return list and save it.
             // Else if the node depth is the same as current max, save it to the
             // return list.
