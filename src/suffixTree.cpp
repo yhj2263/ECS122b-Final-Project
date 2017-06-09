@@ -387,6 +387,7 @@ void suffixTree::linkNodes() {
  * DFS traversal to assign depth to all nodes
  */
 void suffixTree::setDepth(Node* root) {
+    // Recursively set depth from root
     for (auto childNode : root->childNodes) {
         if (!childNode->isLeaf()) {
             childNode->depth = root->depth + childNode->edgeLength;

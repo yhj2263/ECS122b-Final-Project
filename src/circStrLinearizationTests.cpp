@@ -133,7 +133,8 @@ TEST(circStrLinearizationTests, TestCase3) {
 }
 
 /*
- * s = aaaaa, expecting "aaaaa".
+ * s = aaaaa, expecting "aaaaa". Note: This test case failed on Unbuntu, the
+ * tree is not constructed correctly.
  */
 TEST(circStrLinearizationTests, TestCase4) {
     std::string s = "aaaaa";

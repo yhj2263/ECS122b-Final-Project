@@ -21,7 +21,7 @@ add_executable(suffixTree main.cpp)
 target_link_libraries(suffixTree SuffixTreeLib)
 
 ########## make the executable for longestCommonSubstr.cpp
-add_executable(longestCommonSubstr LongestCommonSubstr.cpp)
+add_executable(longestCommonSubstr longestCommonSubstr.cpp)
 target_link_libraries(longestCommonSubstr SuffixTreeLib)
 
 ########## make the test executable for generalized suffixTree
